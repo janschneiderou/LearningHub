@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <!-- XML Schema Generated from XML Document on Tue Jan 02 2018 14:18:23 GMT+0100 (W. Europe Standard Time) -->
+  <!-- with XmlGrid.net Free Online Service http://xmlgrid.net -->
+  <xs:element name="Applications">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Application" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Name" type="xs:string"></xs:element>
+              <xs:element name="Path" type="xs:string"></xs:element>
+              <xs:element name="Remote" type="xs:boolean"></xs:element>
+              <xs:element name="TCPListener" type="xs:int"></xs:element>
+              <xs:element name="TCPSender" type="xs:int"></xs:element>
+              <xs:element name="UDPListener" type="xs:int"></xs:element>
+              <xs:element name="UDPSender" type="xs:int"></xs:element>
+              <xs:element name="Used" type="xs:boolean"></xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

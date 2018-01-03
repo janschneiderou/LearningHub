@@ -1,0 +1,23 @@
+<?xml version="1.0" standalone="yes"?>
+<Applications>
+  <Application>
+    <Name>PresentationTrainer</Name>
+    <Path>C:\Users\jan\source\repos\PT2016\PresentationTrainer\bin\x64\Debug\PresentationTrainer.exe</Path>
+    <Remote>false</Remote>
+    <TCPListener>11001</TCPListener>
+    <TCPSender>12001</TCPSender>
+    <UDPListener>13001</UDPListener>
+    <UDPSender>14001</UDPSender>
+    <Used>True</Used>
+  </Application>
+  <Application>
+    <Name>notepad</Name>
+    <Path>notepad.exe</Path>
+    <Remote>false</Remote>
+    <TCPListener>23432</TCPListener>
+    <TCPSender>3</TCPSender>
+    <UDPListener>32</UDPListener>
+    <UDPSender>342</UDPSender>
+    <Used>true</Used>
+  </Application>
+</Applications>
