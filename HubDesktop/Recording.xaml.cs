@@ -28,6 +28,7 @@ namespace HubDesktop
         bool recordingStarted = false;
         bool everythingReady = false;
         Thread threadWaitingForReady;
+        Thread waitingForUpload;
 
         #region initialization
         public Recording(MainWindow parent)
@@ -146,9 +147,18 @@ namespace HubDesktop
 
         private void buttonStartRecording_Click(object sender, RoutedEventArgs e)
         {
-            foreach(ApplicationClass apps in parent.myEnabledApps)
+            startRecording();
+            
+        }
+
+        public void startRecording()
+        {
+            string recordingID = DateTime.Now.Hour.ToString();
+            recordingID = recordingID + "H" + DateTime.Now.Minute.ToString() + "M" + DateTime.Now.Second.ToString() + "S";
+            
+            foreach (ApplicationClass apps in parent.myEnabledApps)
             {
-                apps.sendStartRecording();
+                apps.sendStartRecording(recordingID);
                 apps.IamRunning = true;
             }
             buttonStartRecording.IsEnabled = false;
@@ -162,8 +172,45 @@ namespace HubDesktop
                 apps.sendStopRecording();
                 apps.IamRunning = false;
             }
-            buttonStartRecording.IsEnabled = true;
+            buttonStartRecording.IsEnabled = false;
             buttonStopRecording.IsEnabled = false;
+
+            waitingForUpload = new Thread(new ThreadStart(uploadListener));
+            waitingForUpload.Start();
         }
+
+        private void uploadListener()
+        {
+            bool waitingForUpload = true;
+            while(waitingForUpload==true)
+            {
+                int i = 0;
+                foreach (ApplicationClass app in parent.myEnabledApps)
+                {
+                    if(app.uploadReady ==true)
+                    {
+                        i++;
+                    }
+                }
+                if(i==parent.myEnabledApps.Count)
+                {
+                    waitingForUpload = false;
+                }
+                Thread.Sleep(1000);
+            }
+            Dispatcher.Invoke(() =>
+            {
+                buttonFinish.Visibility = Visibility.Visible;
+            });
+        }
+
+        private void buttonFinish_Click(object sender, RoutedEventArgs e)
+        {
+            foreach (ApplicationClass app in parent.myEnabledApps)
+            {
+                app.closeApp();
+            }
+
+            }
     }
 }

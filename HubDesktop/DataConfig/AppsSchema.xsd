@@ -13,6 +13,7 @@
               <xs:element name="Remote" type="xs:boolean"></xs:element>
               <xs:element name="TCPListener" type="xs:int"></xs:element>
               <xs:element name="TCPSender" type="xs:int"></xs:element>
+              <xs:element name="TCPFile" type="xs:int"></xs:element>
               <xs:element name="UDPListener" type="xs:int"></xs:element>
               <xs:element name="UDPSender" type="xs:int"></xs:element>
               <xs:element name="Used" type="xs:boolean"></xs:element>

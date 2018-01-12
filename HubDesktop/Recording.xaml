@@ -12,5 +12,6 @@
         </Grid>
         <Button Name="buttonStartRecording" Content="Start Recording" HorizontalAlignment="Left" Margin="10,256,0,0" VerticalAlignment="Top" Width="103" Height="34" Click="buttonStartRecording_Click"/>
         <Button Name="buttonStopRecording" IsEnabled="False" Content="Stop Recording" HorizontalAlignment="Left" Margin="118,256,0,0" VerticalAlignment="Top" Width="100" Height="34" Click="buttonStopRecording_Click"/>
+        <Button  Name="buttonFinish" Visibility="Collapsed" Click="buttonFinish_Click" Content="Finish" HorizontalAlignment="Left" Margin="223,256,0,0" VerticalAlignment="Top" Width="75" Height="34"/>
     </Grid>
 </UserControl>

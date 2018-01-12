@@ -15,8 +15,12 @@ namespace HubDesktop
     {
         string IamReady = "<I AM READY>";
         string StartRecording = "<START RECORDING>";
+        string endStartRecording = "</START RECORDING>";
         string StopRecording = "<STOP RECORDING>";
+        string SendFile = "<SEND FILE>";
+        string endSendFile = "</SEND FILE>";
 
+        string currentFileName;
         private UdpClient receivingUdp;
         private Thread myRunningThread;
 
@@ -26,19 +30,23 @@ namespace HubDesktop
         public bool IamRunning = true;
         public bool isRunning = false;
         public bool isEnabled = false;
+        public bool uploadReady = false;
         bool newPackage = false;
 
+        int TCPFileBufferSize = 1024;
         private TcpClient tcpClientSocket;
         int listeningPort;
         public string Path { get; set; }
         public bool remoteBool { get; set; }
         public int TCPListenerPort { get; set; }
         public int TCPSenderPort { get; set; }
+        public int TCPFile { get; set; }
         public int UDPListenerPort { get; set; }
         public int UDPSenderPort { get; set; }
         public bool usedBool { get; set; }
         public string Name { get; set; }
         string currentString { get; set; }
+        string recordingID;
       
 
         MainWindow Parent;
@@ -46,7 +54,7 @@ namespace HubDesktop
 
         #region initialization
         public ApplicationClass(string applicationName, string filePath, 
-            bool remoteBool, int TCPListener, int TCPSender,  int UDPListener, 
+            bool remoteBool, int TCPListener, int TCPSender, int tCPFile,  int UDPListener, 
             int UDPSender, bool usedBool, MainWindow Parent)
         {
             
@@ -56,10 +64,11 @@ namespace HubDesktop
             this.remoteBool = remoteBool;
             this.TCPListenerPort = TCPListener;
             this.TCPSenderPort = TCPSender;
+            this.TCPFile = tCPFile;
             this.UDPListenerPort = UDPListener;
             this.UDPSenderPort = UDPSender;
             this.usedBool = usedBool;
-
+            
             createSockets();
             //receivingUdp = new UdpClient(this.listeningPort);
         }
@@ -79,13 +88,29 @@ namespace HubDesktop
 
        
 
-        public void sendStartRecording()
+        public void sendStartRecording(string recordingID)
         {
-            sendTCPAsync(StartRecording);
+            this.recordingID = recordingID;
+            sendTCPAsync(StartRecording+recordingID+","+Name+endStartRecording);
         }
 
         public void sendStopRecording()
         {
+            Thread tcpFileThread;
+            uploadReady = false;
+            if (Directory.Exists(MainWindow.workingDirectory + "\\" + recordingID))
+            {
+                
+            }
+            else
+            {
+                DirectoryInfo di = Directory.CreateDirectory(MainWindow.workingDirectory + "\\" + recordingID);
+
+            }
+
+            currentFileName = MainWindow.workingDirectory +"\\"+ recordingID + "\\"+recordingID+ Name +".json";
+            tcpFileThread = new  Thread(new ThreadStart(ReceiveFileTCP));
+            tcpFileThread.Start();
             sendTCPAsync(StopRecording);
         }
 
@@ -154,10 +179,43 @@ namespace HubDesktop
                     isREady = true;
                    
                 }
+                if(receivedString.Contains(SendFile))
+                {
+                    handleSendFileMessage(receivedString);
+                }
             }
             myTCPListener.Stop();
         }
-         #endregion
+
+        private void handleSendFileMessage(string receivedString)
+        {
+            uploadReady = false;
+            Thread tcpFileThread;
+            //"<SEND FILE>myFile.avi</SEND FILE>"
+            int startIndex = receivedString.IndexOf(">") + 1;
+            int startIndex2 = receivedString.IndexOf("</") + 1;
+            int startIndex3 = receivedString.IndexOf("");
+            int length = startIndex2 - startIndex;
+            string filename = receivedString.Substring(startIndex, length - 1);
+
+            if (Directory.Exists(MainWindow.workingDirectory + "\\" + recordingID))
+            {
+
+            }
+            else
+            {
+                DirectoryInfo di = Directory.CreateDirectory(MainWindow.workingDirectory + "\\" + recordingID);
+
+            }
+
+            currentFileName = MainWindow.workingDirectory + "\\" + recordingID + "\\" + filename;
+            tcpFileThread = new Thread(new ThreadStart(ReceiveFileTCP));
+            tcpFileThread.Start();
+            sendTCPAsync(receivedString);
+            
+
+        }
+        #endregion
 
         public bool hasNewMessage()
         {
@@ -194,13 +252,14 @@ namespace HubDesktop
                         {
                             sw.WriteLine(TCPListenerPort);
                             sw.WriteLine(TCPSenderPort);
+                            sw.WriteLine(TCPFile);
                             sw.WriteLine(UDPListenerPort);
                             sw.WriteLine(UDPSenderPort);
                             sw.WriteLine("127.0.0.1");
 
                         }
                         Directory.SetCurrentDirectory(Path.Substring(0, Path.LastIndexOf("\\")));
-                        System.Diagnostics.Process.Start(Path);
+                        System.Diagnostics.Process.Start(Path); //Very important line for Debug
                         
                        
                     }
@@ -228,7 +287,7 @@ namespace HubDesktop
         {
             try
             {
-                myRunningThread.Abort();
+               // myRunningThread.Abort();
                 if (Path.Equals("remoteApp"))
                 {
 
@@ -283,5 +342,63 @@ namespace HubDesktop
                 }
             }
         }
+
+        public void ReceiveFileTCP()
+        {
+            TcpListener Listener = null;
+            try
+            {
+                Listener = new TcpListener(IPAddress.Any, TCPFile);
+                Listener.Start();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
+            byte[] RecData = new byte[TCPFileBufferSize];
+            int RecBytes;
+
+            for (; ; )
+            {
+                TcpClient client = null;
+                NetworkStream netstream = null;
+                
+                try
+                {
+                    
+
+                    if (Listener.Pending())
+                    {
+                        client = Listener.AcceptTcpClient();
+                        netstream = client.GetStream();
+
+                        int totalrecbytes = 0;
+                        FileStream Fs = new FileStream
+         (currentFileName, FileMode.OpenOrCreate, FileAccess.Write);
+                        while ((RecBytes = netstream.Read
+             (RecData, 0, RecData.Length)) > 0)
+                        {
+                            Fs.Write(RecData, 0, RecBytes);
+                            totalrecbytes += RecBytes;
+                        }
+                        Fs.Close();
+
+                        
+                        netstream.Close();
+                        client.Close();
+                        uploadReady = true;
+
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    //netstream.Close();
+                }
+            }
+        }
+
+        
     }
 }

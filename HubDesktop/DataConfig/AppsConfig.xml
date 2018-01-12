@@ -7,8 +7,9 @@ xsi:noNamespaceSchemaLocation="AppsSchema.xsd">
     <Remote >false</Remote>
     <TCPListener>11001</TCPListener>
     <TCPSender>12001</TCPSender>
-    <UDPListener>13001</UDPListener>
-    <UDPSender>14001</UDPSender>
+    <TCPFile>13001</TCPFile>
+    <UDPListener>14001</UDPListener>
+    <UDPSender>15001</UDPSender>
     <Used>true</Used>
   </Application>
   <Application>
@@ -17,6 +18,7 @@ xsi:noNamespaceSchemaLocation="AppsSchema.xsd">
     <Remote >false</Remote>
     <TCPListener>23432</TCPListener>
     <TCPSender>3</TCPSender>
+    <TCPFile>13001</TCPFile>
     <UDPListener>32</UDPListener>
     <UDPSender>342</UDPSender>
     <Used>true</Used>

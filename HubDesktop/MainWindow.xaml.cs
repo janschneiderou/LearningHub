@@ -29,13 +29,16 @@ namespace HubDesktop
         public List<ApplicationClass> myEnabledApps;
         Recording myRecordingInterface;
         DataSet appsDataSet;
+        public static string workingDirectory;
 
         public MainWindow()
         {
             InitializeComponent();
+            workingDirectory = Directory.GetCurrentDirectory();
             myApps = new List<ApplicationClass>();
             myEnabledApps = new List<ApplicationClass>();
             setAppsTable();
+            
         }
 
         private void setAppsTable()
@@ -59,10 +62,11 @@ namespace HubDesktop
                 bool remoteBool = (bool)r[2];
                 int tCPListener = (int)r[3];
                 int tCPSender = (int)r[4];
-                int uDPListener = (int)r[5];
-                int uDPSender = (int)r[6];
-                bool usedBool = (bool)r[7];
-                ApplicationClass app = new ApplicationClass(applicationName, path, remoteBool, tCPListener, tCPSender, uDPListener, uDPSender, usedBool, this);
+                int tCPFile = (int)r[5];
+                int uDPListener = (int)r[6];
+                int uDPSender = (int)r[7];
+                bool usedBool = (bool)r[8];
+                ApplicationClass app = new ApplicationClass(applicationName, path, remoteBool, tCPListener, tCPSender, uDPListener, tCPFile, uDPSender, usedBool, this);
                 myApps.Add(app);
                 if (app.usedBool == true)
                 {
