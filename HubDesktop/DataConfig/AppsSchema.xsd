@@ -17,6 +17,7 @@
               <xs:element name="UDPListener" type="xs:int"></xs:element>
               <xs:element name="UDPSender" type="xs:int"></xs:element>
               <xs:element name="Used" type="xs:boolean"></xs:element>
+              <xs:element name="xAPIUri" type="xs:string"></xs:element>
             </xs:sequence>
           </xs:complexType>
         </xs:element>

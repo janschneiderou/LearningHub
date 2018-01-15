@@ -11,6 +11,7 @@ xsi:noNamespaceSchemaLocation="AppsSchema.xsd">
     <UDPListener>14001</UDPListener>
     <UDPSender>15001</UDPSender>
     <Used>true</Used>
+    <xAPIUri>blank</xAPIUri>
   </Application>
   <Application>
     <Name>notepad</Name>
@@ -22,5 +23,6 @@ xsi:noNamespaceSchemaLocation="AppsSchema.xsd">
     <UDPListener>32</UDPListener>
     <UDPSender>342</UDPSender>
     <Used>true</Used>
+    <xAPIUri>blank</xAPIUri>
   </Application>
 </Applications>

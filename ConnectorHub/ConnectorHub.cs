@@ -19,6 +19,9 @@ namespace ConnectorHub
         public delegate void StopRecordingDelegate(object sender);
         public event StopRecordingDelegate stopRecordingEvent;
 
+        Socket udpSendingSocket;
+        IPEndPoint UDPendPoint;
+
         public bool startedByHub = false;
 
         public string IamReady = "<I AM READY>";
@@ -77,6 +80,12 @@ namespace ConnectorHub
 
         private void createSockets()
         {
+            udpSendingSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram,
+            ProtocolType.Udp);
+
+            IPAddress serverAddr = IPAddress.Parse(HupIPAddress);
+
+            UDPendPoint = new IPEndPoint(serverAddr, UDPSenderPort);
             tcpListenerThread = new Thread(new ThreadStart(tcpListenersStart));
             tcpListenerThread.Start();
           
@@ -186,6 +195,7 @@ namespace ConnectorHub
         }
         #endregion
 
+        #region sendFile
         private void sendFileTCP(string fileName)
         {
             byte[] SendingBuffer = null;
@@ -231,7 +241,22 @@ namespace ConnectorHub
             }
         }
 
+        #endregion
+
         #region interfaces
+
+        public void sendFeedback(string feedback)
+        {
+            FeedbackObject f = new FeedbackObject(startRecordingTime, feedback, myRecordingObject.applicationName);
+            string json = JsonConvert.SerializeObject(f, Formatting.Indented);
+
+            
+
+            
+            byte[] send_buffer = Encoding.ASCII.GetBytes(json);
+
+            udpSendingSocket.SendTo(send_buffer, UDPendPoint);
+        }
 
         public void sendReady()
         {

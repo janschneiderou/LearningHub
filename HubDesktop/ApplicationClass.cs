@@ -27,6 +27,8 @@ namespace HubDesktop
         private TcpListener myTCPListener;
         private Thread tcpListenerThread;
 
+        private Thread udpListenerThread;
+
         public bool IamRunning = true;
         public bool isRunning = false;
         public bool isEnabled = false;
@@ -45,7 +47,7 @@ namespace HubDesktop
         public int UDPSenderPort { get; set; }
         public bool usedBool { get; set; }
         public string Name { get; set; }
-        string currentString { get; set; }
+        string currentUDPString { get; set; }
         string recordingID;
       
 
@@ -80,6 +82,12 @@ namespace HubDesktop
             
         }
 
+        private void createUDPSockets()
+        {
+            receivingUdp = new UdpClient(this.UDPListenerPort);
+            udpListenerThread = new Thread(new ThreadStart(myUDPThreadFunction));
+            udpListenerThread.Start();
+        }
 
 
         #endregion
@@ -224,9 +232,11 @@ namespace HubDesktop
         public string getCurrentString()
         {
             newPackage = false;
-            return currentString;
+            return currentUDPString;
         }
-        //Starts application and reader for the UDP thread
+
+        #region startStopapps
+        //Starts application 
         public void startApp()
         {
             try
@@ -256,12 +266,14 @@ namespace HubDesktop
                             sw.WriteLine(UDPListenerPort);
                             sw.WriteLine(UDPSenderPort);
                             sw.WriteLine("127.0.0.1");
-
                         }
+
+                        
                         Directory.SetCurrentDirectory(Path.Substring(0, Path.LastIndexOf("\\")));
                         System.Diagnostics.Process.Start(Path); //Very important line for Debug
-                        
-                       
+                        createUDPSockets();
+
+
                     }
 
                 }
@@ -306,17 +318,20 @@ namespace HubDesktop
             isRunning = false;
             IamRunning = false;
         }
+        #endregion
+
+        #region UDPListeningStuff
 
         /// <summary>
         /// Thread receiving the UDP packages and forwarding them to the main class
         /// </summary>
-        private void myThreadFunction()
+        private void myUDPThreadFunction()
         {
             while (isRunning == true)
             {
                 //Creates an IPEndPoint to record the IP Address and port number of the sender. 
                 // The IPEndPoint will allow you to read datagrams sent from any source.
-                IPEndPoint RemoteIpEndPoint = new IPEndPoint(IPAddress.Any, listeningPort);
+                IPEndPoint RemoteIpEndPoint = new IPEndPoint(IPAddress.Any, this.UDPListenerPort);
                 try
                 {
 
@@ -328,12 +343,9 @@ namespace HubDesktop
                     Console.WriteLine("This is the message you received " +
                                                  returnData);
 
-                    currentString = returnData.ToString();
+                    currentUDPString = returnData.ToString();
                     newPackage = true;
-                    //if (Parent.directPush == true)
-                    //{
-                    //    Parent.storeString(currentString);
-                    //}
+                    handleUDPPackage();
                 }
 
                 catch (Exception e)
@@ -343,6 +355,13 @@ namespace HubDesktop
             }
         }
 
+        private void handleUDPPackage()
+        {
+            Parent.handleFeedback(currentUDPString);
+        }
+        #endregion
+
+        #region receivingFiles
         public void ReceiveFileTCP()
         {
             TcpListener Listener = null;
@@ -398,7 +417,7 @@ namespace HubDesktop
                 }
             }
         }
+        #endregion
 
-        
     }
 }

@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConnectorHub.cs" />
+    <Compile Include="FeedbackObject.cs" />
     <Compile Include="FrameObject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RecordingObject.cs" />

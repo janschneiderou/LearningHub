@@ -52,6 +52,14 @@ namespace HubDesktop
 
         }
 
+        public void handleFeedback(string feedback)
+        {
+            Dispatcher.Invoke(() =>
+            {
+                myRecordingInterface.LabelFeedback.Content = feedback;
+            });
+        }
+
         #region startingApps
         private void addApplicationsToLists()
         {
