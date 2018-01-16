@@ -201,6 +201,7 @@ namespace HubDesktop
             Dispatcher.Invoke(() =>
             {
                 buttonFinish.Visibility = Visibility.Visible;
+                
             });
         }
 
