@@ -29,6 +29,7 @@ namespace HubDesktop
         bool everythingReady = false;
         Thread threadWaitingForReady;
         Thread waitingForUpload;
+        string recordingID;
 
         #region initialization
         public Recording(MainWindow parent)
@@ -153,7 +154,7 @@ namespace HubDesktop
 
         public void startRecording()
         {
-            string recordingID = DateTime.Now.Hour.ToString();
+            recordingID = DateTime.Now.Hour.ToString();
             recordingID = recordingID + "H" + DateTime.Now.Minute.ToString() + "M" + DateTime.Now.Second.ToString() + "S";
             
             foreach (ApplicationClass apps in parent.myEnabledApps)
@@ -201,7 +202,7 @@ namespace HubDesktop
             Dispatcher.Invoke(() =>
             {
                 buttonFinish.Visibility = Visibility.Visible;
-                
+                CompressAndUpload ca = new CompressAndUpload(MainWindow.workingDirectory + "\\" + recordingID);
             });
         }
 
