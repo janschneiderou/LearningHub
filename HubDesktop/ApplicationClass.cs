@@ -248,7 +248,7 @@ namespace HubDesktop
                 string path = System.IO.Directory.GetCurrentDirectory();
                 try
                 {
-                    if (Path.Equals("remoteApp"))
+                    if (remoteBool==true)
                     {
                         sendTCPAsync(areYouReady);
                         Console.WriteLine("application might be running remotely so thread and listener started");
