@@ -14,6 +14,7 @@ namespace HubDesktop
     public class ApplicationClass
     {
         string IamReady = "<I AM READY>";
+        string areYouReady = "<ARE YOU READY?>";
         string StartRecording = "<START RECORDING>";
         string endStartRecording = "</START RECORDING>";
         string StopRecording = "<STOP RECORDING>";
@@ -101,6 +102,8 @@ namespace HubDesktop
             this.recordingID = recordingID;
             sendTCPAsync(StartRecording+recordingID+","+Name+endStartRecording);
         }
+
+        
 
         public void sendStopRecording()
         {
@@ -247,6 +250,7 @@ namespace HubDesktop
                 {
                     if (Path.Equals("remoteApp"))
                     {
+                        sendTCPAsync(areYouReady);
                         Console.WriteLine("application might be running remotely so thread and listener started");
                     }
                     else

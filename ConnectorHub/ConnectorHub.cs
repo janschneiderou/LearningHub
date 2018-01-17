@@ -24,6 +24,7 @@ namespace ConnectorHub
 
         public bool startedByHub = false;
 
+        public string areYouReady = "<ARE YOU READY?>";
         public string IamReady = "<I AM READY>";
         public string StartRecording = "<START RECORDING>";
         public string StopRecording = "<STOP RECORDING>";
@@ -129,6 +130,10 @@ namespace ConnectorHub
                     else if(receivedString.Contains(SendFile))
                     {
                         handleSendFile(receivedString);
+                    }
+                    else if (receivedString.Contains(areYouReady))
+                    {
+                        sendReady();
                     }
                 }
             }
