@@ -8,6 +8,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Globalization;
 
 namespace ConnectorHub
 {
@@ -55,14 +56,18 @@ namespace ConnectorHub
 
         public void init()
         {
+           
             string path = System.IO.Directory.GetCurrentDirectory();
             valuesNameDefinition = new List<string>();
             frames = new List<FrameObject>();
-
+            Path.Combine(path, "portConfig.txt");
+            string fileName = Path.Combine(path, "portConfig.txt");
+            
+            
 
             try
             {
-                string[] text = System.IO.File.ReadAllLines(path + "\\portConfig.txt");
+                string[] text = File.ReadAllLines(fileName);
                 TCPSenderPort = Int32.Parse(text[0]);
                 TCPListenerPort = Int32.Parse(text[1]);
                 TCPFilePort = Int32.Parse(text[2]);
@@ -74,6 +79,25 @@ namespace ConnectorHub
             }
             catch (Exception e)
             {
+                try
+                {
+
+                    
+
+                    string[] text = File.ReadAllLines("portConfig");
+                    TCPSenderPort = Int32.Parse(text[0]);
+                    TCPListenerPort = Int32.Parse(text[1]);
+                    TCPFilePort = Int32.Parse(text[2]);
+                    UDPSenderPort = Int32.Parse(text[3]);
+                    UDPListenerPort = Int32.Parse(text[4]);
+                    HupIPAddress = text[5];
+
+                    createSockets();
+                }
+                catch (Exception et)
+                {
+                    Console.WriteLine("error opening portConfig.txt file");
+                }
                 Console.WriteLine("error opening portConfig.txt file");
             }
             
