@@ -278,12 +278,7 @@ namespace ConnectorHub
         {
             FeedbackObject f = new FeedbackObject(startRecordingTime, feedback, myRecordingObject.applicationName);
             string json = JsonConvert.SerializeObject(f, Formatting.Indented);
-
-            
-
-            
             byte[] send_buffer = Encoding.ASCII.GetBytes(json);
-
             udpSendingSocket.SendTo(send_buffer, UDPendPoint);
         }
 

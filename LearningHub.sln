@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HubDesktop", "HubDesktop\Hu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConnectorHub", "ConnectorHub\ConnectorHub.csproj", "{E12FC71F-74DB-4C61-A2F5-6898C03D4BA1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VisualTest", "VisualTest\VisualTest.csproj", "{4EE76D1F-F416-4F8C-84DC-337FC11621E8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{E12FC71F-74DB-4C61-A2F5-6898C03D4BA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E12FC71F-74DB-4C61-A2F5-6898C03D4BA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E12FC71F-74DB-4C61-A2F5-6898C03D4BA1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4EE76D1F-F416-4F8C-84DC-337FC11621E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4EE76D1F-F416-4F8C-84DC-337FC11621E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4EE76D1F-F416-4F8C-84DC-337FC11621E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4EE76D1F-F416-4F8C-84DC-337FC11621E8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
