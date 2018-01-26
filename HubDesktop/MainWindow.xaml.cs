@@ -27,8 +27,14 @@ namespace HubDesktop
     {
         List<ApplicationClass> myApps;
         public List<ApplicationClass> myEnabledApps;
+
+        List<FeedbackApp> myFeedbacks;
+        List<LAApplication> myLAApps;
+
         Recording myRecordingInterface;
         DataSet appsDataSet;
+        DataSet LAAppsDataSet;
+        DataSet FeedbackAppsDataSet;
         public static string workingDirectory;
 
         public MainWindow()
@@ -37,6 +43,9 @@ namespace HubDesktop
             workingDirectory = Directory.GetCurrentDirectory();
             myApps = new List<ApplicationClass>();
             myEnabledApps = new List<ApplicationClass>();
+
+            myFeedbacks = new List<FeedbackApp>();
+            myLAApps = new List<LAApplication>();
             setAppsTable();
             
         }
@@ -50,6 +59,18 @@ namespace HubDesktop
             
             AppsGrid.ItemsSource = appsDataSet.Tables[0].DefaultView;
 
+
+            LAAppsDataSet = new DataSet();
+            LAAppsDataSet.ReadXmlSchema(Directory.GetCurrentDirectory() + "\\DataConfig\\LASchema.xsd");
+            LAAppsDataSet.ReadXml(Directory.GetCurrentDirectory() + "\\DataConfig\\LAConfig.xml");
+
+            LAAppsGrid.ItemsSource = LAAppsDataSet.Tables[0].DefaultView;
+
+            FeedbackAppsDataSet = new DataSet();
+            FeedbackAppsDataSet.ReadXmlSchema(Directory.GetCurrentDirectory() + "\\DataConfig\\FeedbackSchema.xsd");
+            FeedbackAppsDataSet.ReadXml(Directory.GetCurrentDirectory() + "\\DataConfig\\FeedbackConfig.xml");
+
+            FeedbackAppsGrid.ItemsSource = FeedbackAppsDataSet.Tables[0].DefaultView;
         }
 
         public void handleFeedback(string feedback)
@@ -63,6 +84,11 @@ namespace HubDesktop
         #region startingApps
         private void addApplicationsToLists()
         {
+            myApps = new List<ApplicationClass>();
+            myEnabledApps = new List<ApplicationClass>();
+            myFeedbacks = new List<FeedbackApp>();
+            myLAApps = new List<LAApplication>();
+
             foreach (DataRow r in appsDataSet.Tables[0].Rows)
             {
                 string applicationName = (string)r[0];
@@ -80,6 +106,21 @@ namespace HubDesktop
                 {
                     myEnabledApps.Add(app);
                 }
+            }
+            foreach(DataRow r in FeedbackAppsDataSet.Tables[0].Rows)
+            {
+                string path = (string)r[0];
+                int TCPSenderPort = (int)r[1];
+                int UDPSenderPort = (int)r[2];
+                FeedbackApp fa = new FeedbackApp(path, TCPSenderPort, UDPSenderPort);
+                myFeedbacks.Add(fa);
+            }
+            foreach (DataRow r in LAAppsDataSet.Tables[0].Rows)
+            {
+                string name = (string)r[0];
+                string path = (string)r[1];
+                LAApplication LAApp = new LAApplication(name, path);
+                myLAApps.Add(LAApp);
             }
         }
 
@@ -102,6 +143,23 @@ namespace HubDesktop
         {
             appsDataSet.Tables[0].Rows[AppsGrid.SelectedIndex].Delete();
         }
+        private void saveLAApplications()
+        {
+            LAAppsDataSet.Tables[0].WriteXml(Directory.GetCurrentDirectory() + "\\DataConfig\\LAConfig.xml");
+        }
+        private void deleteAApplications()
+        {
+            LAAppsDataSet.Tables[0].Rows[LAAppsGrid.SelectedIndex].Delete();
+        }
+        private void SaveFeedbackApplications()
+        {
+            FeedbackAppsDataSet.Tables[0].WriteXml(Directory.GetCurrentDirectory() + "\\DataConfig\\FeedbackConfig.xml");
+        }
+        private void DeleteFeedbackApplications()
+        {
+            FeedbackAppsDataSet.Tables[0].Rows[FeedbackAppsGrid.SelectedIndex].Delete();
+        }
+
         #endregion
 
         #region interactionsClicks
@@ -120,6 +178,8 @@ namespace HubDesktop
         private void StartApplications_Click(object sender, RoutedEventArgs e)
         {
             saveApplications();
+            saveLAApplications();
+            SaveFeedbackApplications();
             addApplicationsToLists();
             myRecordingInterface = new Recording(this);
             MainCanvas.Children.Add(myRecordingInterface);
@@ -127,9 +187,38 @@ namespace HubDesktop
 
         }
 
+        private void LAButtonSave_Click(object sender, RoutedEventArgs e)
+        {
+            saveLAApplications();
+        }
 
+        
+
+        private void LAButtonDelete_Click(object sender, RoutedEventArgs e)
+        {
+            deleteAApplications();
+            
+        }
+
+        
+
+        private void FeedbackButtonSave_Click(object sender, RoutedEventArgs e)
+        {
+            SaveFeedbackApplications();
+        }
+
+      
+        private void FeedbackButtonDelete_Click(object sender, RoutedEventArgs e)
+        {
+            DeleteFeedbackApplications();
+            
+        }
+
+       
 
 
         #endregion
+
+
     }
 }

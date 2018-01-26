@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<FeedbackApplications xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:noNamespaceSchemaLocation="FeedbackSchema.xsd">
+  <FeedbackApplication>
+    <Name>PresentationTrainer</Name>
+    <Path>127.0.0.1</Path>
+    <TCPListener>15001</TCPListener>
+    <UDPListener>16001</UDPListener>
+    <Used>true</Used>
+    <xAPIUri>blank</xAPIUri>
+  </FeedbackApplication>
+</FeedbackApplications>

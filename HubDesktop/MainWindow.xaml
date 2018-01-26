@@ -5,18 +5,26 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:HubDesktop"
         mc:Ignorable="d"
-        Title="Learning Hub" Height="550" Width="1097">
+        Title="Learning Hub" Height="800" Width="1574.671">
     <Canvas Name="MainCanvas">
 
-        <DataGrid Name="AppsGrid" HorizontalAlignment="Left" AutoGenerateColumns="True"
-                  Margin="10,10" Width="1040" IsEnabled="True" Height="250"  >
+        <DataGrid Name="AppsGrid" HorizontalAlignment="Left" AutoGenerateColumns="True" Width="1040" IsEnabled="True" Height="250" Canvas.Left="10" Canvas.Top="45"  >
             <DataGrid.Columns>
                 <!-- <DataGridTextColumn Header="Name" Binding="{Binding Name}" /> -->
             </DataGrid.Columns>
         </DataGrid>
-        <Button Name="SaveButton" Content="Save" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Click="SaveButton_Click" Canvas.Left="17" Canvas.Top="284"/>
-        <Button Name="DeleteButton" Content="Delete" HorizontalAlignment="Left" VerticalAlignment="Top" Width="76" RenderTransformOrigin="3.059,0.65" Click="DeleteButton_Click" Canvas.Left="120" Canvas.Top="284"/>
-        <Button Name="StartApplications" Content="Start Applications" HorizontalAlignment="Left" VerticalAlignment="Top" Width="116" Height="39" Canvas.Left="17" Canvas.Top="336" Click="StartApplications_Click"/>
+        <Button Name="SaveButton" Content="Save" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Click="SaveButton_Click" Canvas.Left="1083" Canvas.Top="45"/>
+        <Button Name="DeleteButton" Content="Delete" HorizontalAlignment="Left" VerticalAlignment="Top" Width="76" RenderTransformOrigin="3.059,0.65" Click="DeleteButton_Click" Canvas.Left="1083" Canvas.Top="100"/>
+        <Button Name="StartApplications" Content="Start Applications" HorizontalAlignment="Left" VerticalAlignment="Top" Width="116" Height="39" Canvas.Left="10" Canvas.Top="689" Click="StartApplications_Click"/>
+        <Label Content="Recording Applications" Canvas.Left="314" Canvas.Top="19"/>
+        <DataGrid Name="LAAppsGrid" Height="159" Canvas.Left="10" Canvas.Top="349" Width="492"/>
+        <Label Content="Learning Analytics url" Canvas.Left="162" Canvas.Top="318"/>
+        <DataGrid Name="FeedbackAppsGrid" Height="159" Canvas.Left="667" Canvas.Top="349" Width="383"/>
+        <Label Content="Feedback Applications" Canvas.Left="733" Canvas.Top="317"/>
+        <Button Name="LAButtonSave" Click="LAButtonSave_Click" Content="Save" Canvas.Left="540" Canvas.Top="374" Width="75"/>
+        <Button Name="LAButtonDelete" Click="LAButtonDelete_Click" Content="Delete" Canvas.Left="540" Canvas.Top="427" Width="75"/>
+        <Button Name="FeedbackButtonSave" Click="FeedbackButtonSave_Click" Content="Save" Canvas.Left="1084" Canvas.Top="374" Width="75"/>
+        <Button Name="FeedbackButtonDelete" Click="FeedbackButtonDelete_Click" Content="Delete" Canvas.Left="1084" Canvas.Top="432" Width="75"/>
 
 
 

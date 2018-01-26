@@ -10,14 +10,14 @@ namespace ConnectorHub
     {
         public System.TimeSpan frameStamp;
         public string applicationName { get; set; }
-        public Dictionary<string, string> feedbackAttributes;
+        public string verb;
 
         public FeedbackObject(System.DateTime start,  string feedbackValue, string applicationName)
         {
-            feedbackAttributes = new Dictionary<string, string>();
+        
             this.frameStamp = System.DateTime.Now.Subtract(start);
             this.applicationName = applicationName;
-            feedbackAttributes.Add("Fedback", feedbackValue);
+            this.verb = feedbackValue;
         
         }
     }
