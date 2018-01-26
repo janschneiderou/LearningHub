@@ -75,6 +75,10 @@ namespace HubDesktop
 
         public void handleFeedback(string feedback)
         {
+            foreach(FeedbackApp fapp in myFeedbacks)
+            {
+                fapp.sendUDP(feedback);
+            }
             Dispatcher.Invoke(() =>
             {
                 myRecordingInterface.LabelFeedback.Content = feedback;
@@ -109,9 +113,10 @@ namespace HubDesktop
             }
             foreach(DataRow r in FeedbackAppsDataSet.Tables[0].Rows)
             {
-                string path = (string)r[0];
-                int TCPSenderPort = (int)r[1];
-                int UDPSenderPort = (int)r[2];
+                string name = (string)r[0];
+                string path = (string)r[1];
+                int TCPSenderPort = (int)r[2];
+                int UDPSenderPort = (int)r[3];
                 FeedbackApp fa = new FeedbackApp(path, TCPSenderPort, UDPSenderPort);
                 myFeedbacks.Add(fa);
             }
