@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ConnectorHub;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -173,6 +174,9 @@ namespace HubDesktop
                 apps.sendStopRecording();
                 apps.IamRunning = false;
             }
+
+
+            parent.handleXAPIAsync();
             buttonStartRecording.IsEnabled = false;
             buttonStopRecording.IsEnabled = false;
 

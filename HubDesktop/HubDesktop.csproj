@@ -61,12 +61,18 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="XAPIStuff\XAPIActor.cs" />
     <Compile Include="CompressAndUpload.cs" />
     <Compile Include="FeedbackApp.cs" />
     <Compile Include="LAApplication.cs" />
     <Compile Include="Recording.xaml.cs">
       <DependentUpon>Recording.xaml</DependentUpon>
     </Compile>
+    <Compile Include="XAPIStuff\XAPIContext.cs" />
+    <Compile Include="XAPIStuff\XAPIDurationContext.cs" />
+    <Compile Include="XAPIStuff\XAPIObject.cs" />
+    <Compile Include="XAPIStuff\XAPIStatement.cs" />
+    <Compile Include="XAPIStuff\XAPIVerb.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -140,6 +146,12 @@
     <None Include="DataConfig\FeedbackConfig.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ConnectorHub\ConnectorHub.csproj">
+      <Project>{E12FC71F-74DB-4C61-A2F5-6898C03D4BA1}</Project>
+      <Name>ConnectorHub</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -8,9 +8,9 @@ namespace ConnectorHub
 {
     public class FeedbackObject
     {
-        public System.TimeSpan frameStamp;
+        public System.TimeSpan frameStamp { get; set; }
         public string applicationName { get; set; }
-        public string verb;
+        public string verb { get; set; }
 
         public FeedbackObject(System.DateTime start,  string feedbackValue, string applicationName)
         {
