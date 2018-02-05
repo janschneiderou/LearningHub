@@ -31,8 +31,14 @@ namespace ConnectorHubUW
 
         public FeedbackHub()
         {
-            TCPListenerPort = 15002;
-            UDPListenerPort = 16002;
+            
+            
+        }
+
+        public void init(int TCPListenerPort, int UDPListenerPort)
+        {
+            this.TCPListenerPort = TCPListenerPort;
+            this.UDPListenerPort = UDPListenerPort;
             createSocketsAsync();
         }
 
@@ -56,7 +62,8 @@ namespace ConnectorHubUW
             {
                 TCPListenerPort = 15002;
                 UDPListenerPort = 16002;
-                Console.WriteLine("error opening feedbackPortConfig.txt file");
+                createSocketsAsync();
+                //  Console.WriteLine("error opening feedbackPortConfig.txt file");
             }
         }
 
