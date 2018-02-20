@@ -1,10 +1,10 @@
-﻿using Newtonsoft.Json;
+﻿//using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Net.Sockets;
+//using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -20,7 +20,7 @@ namespace ConnectorHubUW
         public delegate void StopRecordingDelegate(object sender);
         public event StopRecordingDelegate stopRecordingEvent;
 
-        Socket udpSendingSocket;
+       // Socket udpSendingSocket;
         IPEndPoint UDPendPoint;
 
         public bool startedByHub = false;
@@ -41,7 +41,7 @@ namespace ConnectorHubUW
 
         private StreamSocket tcpClientSocket;
 
-        private TcpListener myTCPListener;
+       // private TcpListener myTCPListener;
         private Task tcpListenerThread;
         int TCPFileBufferSize = 1024;
         System.DateTime startRecordingTime;
@@ -106,8 +106,8 @@ namespace ConnectorHubUW
 
         private void createSockets()
         {
-            udpSendingSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram,
-            ProtocolType.Udp);
+          //  udpSendingSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram,
+         //   ProtocolType.Udp);
 
             IPAddress serverAddr = IPAddress.Parse(HupIPAddress);
 
@@ -122,18 +122,18 @@ namespace ConnectorHubUW
         {
             try
             {
-                myTCPListener = new TcpListener(IPAddress.Any, TCPListenerPort);
-                myTCPListener.Start();
+           //     myTCPListener = new TcpListener(IPAddress.Any, TCPListenerPort);
+           //     myTCPListener.Start();
                 while (IamRunning == true)
                 {
                   
 
-                    Socket s = await myTCPListener.AcceptSocketAsync();
+              //      Socket s = await myTCPListener.AcceptSocketAsync();
                   //  Console.WriteLine("Connection accepted from " + s.RemoteEndPoint);
 
                     byte[] b = new byte[100];
 
-                    int k = s.Receive(b);
+              //      int k = s.Receive(b);
                    // Console.WriteLine("Recieved...");
                     string receivedString = System.Text.Encoding.UTF8.GetString(b);
 
@@ -177,10 +177,10 @@ namespace ConnectorHubUW
                 }
                 else
                 {
-                    string json = JsonConvert.SerializeObject(myRecordingObject, Formatting.Indented);
+                 //   string json = JsonConvert.SerializeObject(myRecordingObject, Formatting.Indented);
                     string path = Directory.GetCurrentDirectory();
                     string fileName = path + "\\" + myRecordingObject.recordingID + myRecordingObject.applicationName + ".json";
-                    File.WriteAllText(fileName, json);
+                  //  File.WriteAllText(fileName, json);
                     sendFileTCP(fileName);
                     x++;
 
@@ -228,7 +228,7 @@ namespace ConnectorHubUW
             byte[] SendingBuffer = null;
             StreamSocket client = null;
 
-            NetworkStream netstream = null;
+        //    NetworkStream netstream = null;
             try
             {
                 client = new StreamSocket();
@@ -238,7 +238,7 @@ namespace ConnectorHubUW
                 
                 await client.ConnectAsync(serverHost, TCPFilePort.ToString());
 
-                netstream = (NetworkStream)client.OutputStream;
+             //   netstream = (NetworkStream)client.OutputStream;
                 
                 FileStream Fs = new FileStream(fileName, FileMode.Open, FileAccess.Read);
                 int NoOfPackets = Convert.ToInt32
@@ -256,7 +256,7 @@ namespace ConnectorHubUW
                         CurrentPacketLength = TotalLength;
                     SendingBuffer = new byte[CurrentPacketLength];
                     Fs.Read(SendingBuffer, 0, CurrentPacketLength);
-                    netstream.Write(SendingBuffer, 0, (int)SendingBuffer.Length);
+                 //   netstream.Write(SendingBuffer, 0, (int)SendingBuffer.Length);
 
                 }
 
@@ -265,11 +265,11 @@ namespace ConnectorHubUW
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+               // Console.WriteLine(ex.Message);
             }
             finally
             {
-                netstream.Dispose();
+            //    netstream.Dispose();
                 client.Dispose();
 
             }
@@ -282,9 +282,9 @@ namespace ConnectorHubUW
         public void sendFeedback(string feedback)
         {
             FeedbackObject f = new FeedbackObject(startRecordingTime, feedback, myRecordingObject.applicationName);
-            string json = JsonConvert.SerializeObject(f, Formatting.Indented);
-            byte[] send_buffer = Encoding.ASCII.GetBytes(json);
-            udpSendingSocket.SendTo(send_buffer, UDPendPoint);
+          //  string json = JsonConvert.SerializeObject(f, Formatting.Indented);
+          //  byte[] send_buffer = Encoding.ASCII.GetBytes(json);
+        //    udpSendingSocket.SendTo(send_buffer, UDPendPoint);
         }
 
         public void sendReady()
@@ -327,28 +327,28 @@ namespace ConnectorHubUW
                 Byte[] data = System.Text.Encoding.ASCII.GetBytes(message);
 
                 // Get a client stream for reading and writing.
-                NetworkStream stream = (NetworkStream)tcpClientSocket.OutputStream;
+             //   NetworkStream stream = (NetworkStream)tcpClientSocket.OutputStream;
 
                 // Send the message to the connected TcpServer. 
-                await stream.WriteAsync(data, 0, data.Length);
+             //   await stream.WriteAsync(data, 0, data.Length);
                 //stream.Write(data, 0, data.Length);
 
-                Console.WriteLine("Sent: {0}", message);
+              //  Console.WriteLine("Sent: {0}", message);
 
                 // Close everything.
-                stream.Dispose();
+             //   stream.Dispose();
 
             }
             catch
             {
-                Console.WriteLine("error sending TCP message");
+               // Console.WriteLine("error sending TCP message");
             }
         }
 
         public void close()
         {
             IamRunning = false;
-            myTCPListener.Stop();
+          //  myTCPListener.Stop();
         }
 
         #endregion

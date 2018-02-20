@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Net.Sockets;
+//using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Networking.Sockets;
@@ -22,7 +22,7 @@ namespace ConnectorHubUW
         private DatagramSocket receivingUdp;
         private Task udpListenerThread;
 
-        private TcpListener myTCPListener;
+      //  private TcpListener myTCPListener;
         private Task tcpListenerThread;
 
         private string currentUDPString;
