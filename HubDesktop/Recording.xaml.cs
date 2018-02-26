@@ -31,6 +31,7 @@ namespace HubDesktop
         Thread threadWaitingForReady;
         Thread waitingForUpload;
         string recordingID;
+        public bool isOpen = true;
 
         #region initialization
         public Recording(MainWindow parent)
@@ -51,7 +52,7 @@ namespace HubDesktop
 
         private void tcpListenersStart()
         {
-            while(recordingStarted==false && everythingReady == false)
+            while(recordingStarted==false && everythingReady == false && isOpen==true)
             {
                 setLabelReadyContent();
                 Thread.Sleep(1000);
@@ -141,10 +142,14 @@ namespace HubDesktop
                 }
                 i++;
             }
-            if(readyApps==parent.myEnabledApps.Count)
+            if(parent.myEnabledApps != null)
             {
-                everythingReady = true;
+                if (readyApps == parent.myEnabledApps.Count)
+                {
+                    everythingReady = true;
+                }
             }
+            
         }
 
         private void buttonStartRecording_Click(object sender, RoutedEventArgs e)

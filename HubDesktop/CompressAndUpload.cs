@@ -49,6 +49,14 @@ namespace HubDesktop
 
             var fileContent = new ByteArrayContent(FileToByteArray(zipFileName));
 
+            var values = new Dictionary<string, string>
+            {
+                { "device", "LearningHub" },
+                { "author", "JanMac" },
+                { "description", "PTMYOVideo" }
+            };
+
+            var content = new FormUrlEncodedContent(values);
 
             var header = new ContentDispositionHeaderValue("form-data");
             header.Name = "\"myFile\"";
@@ -58,6 +66,7 @@ namespace HubDesktop
 
             fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse("application/x-zip-compressed");
             form.Add(fileContent, "myFile", recordingID);
+            form.Add(content);
 
             int c = form.Count();
             var response = await client.PostAsync(url, form);

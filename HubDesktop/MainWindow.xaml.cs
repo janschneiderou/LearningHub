@@ -56,7 +56,19 @@ namespace HubDesktop
             myFeedbacks = new List<FeedbackApp>();
             myLAApps = new List<LAApplication>();
             setAppsTable();
-            
+            this.Closing += MainWindow_Closing;
+        }
+
+        private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            foreach(ApplicationClass app in myEnabledApps)
+            {
+                app.closeApp();
+            }
+            myEnabledApps = null;
+            myRecordingInterface.isOpen = false;
+            //base.OnExiting(sender, e);
+            Environment.Exit(Environment.ExitCode);
         }
 
         private void setAppsTable()

@@ -23,7 +23,7 @@ namespace HubDesktop
 
         string currentFileName;
         private UdpClient receivingUdp;
-        private Thread myRunningThread;
+        
 
         private TcpListener myTCPListener;
         private Thread tcpListenerThread;
