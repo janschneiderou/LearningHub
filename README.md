@@ -60,7 +60,7 @@ The first instruction executed by data providers after receiving a StartRecordin
 
 
 To keep things simple from the side of the tutor it is recommended to only transmit critical data from the providers to the LH. An example of critical data could be the instruction to “Speak Louder” in case a microphone application detects that the learner is speaking too soft during the specific learning task. To keep things as simple as possible this type of instruction is transmitted from the provider to the LH via UDP sockets.
-The MLH can then forward the received instructions to applications design to provide feedback to learners. This applications can be ambient displays, augmented reality glasses, etc. Establishing the communication between the LH and the immediate feedback applications is a very similar process to the one for establishing the link between the LH and providers. Before starting a recording one needs to manually select the feedback applications that will be used and define the communication channels. For each feedback application one needs to define:
+The LH can then forward the received instructions to applications design to provide feedback to learners. This applications can be ambient displays, augmented reality glasses, etc. Establishing the communication between the LH and the immediate feedback applications is a very similar process to the one for establishing the link between the LH and providers. Before starting a recording one needs to manually select the feedback applications that will be used and define the communication channels. For each feedback application one needs to define:
 ·	The Name of the application
 ·	Path to reach the application (IP address)
 ·	Port number for sending operational instructions via a TCP socket.
