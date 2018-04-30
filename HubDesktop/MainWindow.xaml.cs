@@ -7,7 +7,10 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Sockets;
 using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -43,7 +46,21 @@ namespace HubDesktop
         public FeedbackObject lastFeedbackSent;
 
         public static string currentUser;
-       
+
+
+
+
+        // variables for remote control
+        public enum States { menu, recordingReady, isRecording, RecordingStop };
+        public static States myState;
+        Thread RemoteControlThread;
+        private TcpListener myRemoteControlTCPListener;
+        bool IamRunning = true;
+        string startAPPs = "<START APPLICATIONS>";
+        string startRecording = "<START RECORDING>";
+        string stopRecording = "<STOP RECORDING>";
+        string finish = "<FINISH>";
+        int controlPortNumber;
 
         public MainWindow()
         {
@@ -56,7 +73,25 @@ namespace HubDesktop
             myFeedbacks = new List<FeedbackApp>();
             myLAApps = new List<LAApplication>();
             setAppsTable();
+            Loaded += MainWindow_Loaded;
+
+           
+
             this.Closing += MainWindow_Closing;
+        }
+
+        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            myState = States.menu;
+            controlPortNumber = Int32.Parse(controlPort.Text);
+            RemoteControlThread = new Thread(new ThreadStart(remoteControlStart));
+            RemoteControlThread.Start();
+        }
+
+        public void startAgain()
+        {
+            MainCanvas.Children.Remove(myRecordingInterface);
+            myRecordingInterface = null;
         }
 
         private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -66,6 +101,7 @@ namespace HubDesktop
                 app.closeApp();
             }
             myEnabledApps = null;
+            IamRunning = false;
             try
             {
                 myRecordingInterface.isOpen = false;
@@ -306,6 +342,7 @@ namespace HubDesktop
             addApplicationsToLists();
             myRecordingInterface = new Recording(this);
             MainCanvas.Children.Add(myRecordingInterface);
+            myState = States.recordingReady;
             initializeApplications();
 
         }
@@ -337,11 +374,97 @@ namespace HubDesktop
             
         }
 
-       
+
+
 
 
         #endregion
 
+        #region remoteControlstuff
 
+        private void TextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            e.Handled = !IsTextAllowed(e.Text);
+        }
+        private static bool IsTextAllowed(string text)
+        {
+            Regex regex = new Regex("[^0-9.-]+"); //regex that matches disallowed text
+            return !regex.IsMatch(text);
+        }
+
+
+        private void remoteControlStart()
+        {
+            try
+            {
+                controlPortNumber = Int32.Parse(controlPort.Text);
+            }
+            catch
+            {
+
+            }
+            myRemoteControlTCPListener = new TcpListener(IPAddress.Any, controlPortNumber);
+            myRemoteControlTCPListener.Start();
+            while (IamRunning == true)
+            {
+                Console.WriteLine("The server is running at port 12001...");
+                Console.WriteLine("The local End point is  :" +
+                                  myRemoteControlTCPListener.LocalEndpoint);
+                Console.WriteLine("Waiting for a connection.....");
+
+                Socket s = myRemoteControlTCPListener.AcceptSocket();
+                Console.WriteLine("Connection accepted from " + s.RemoteEndPoint);
+
+                byte[] b = new byte[100];
+
+                int k = s.Receive(b);
+                Console.WriteLine("Recieved...");
+                string receivedString = System.Text.Encoding.UTF8.GetString(b);
+
+                switch(myState)
+                {
+                    case States.menu:
+                        if(receivedString.Contains(startAPPs))
+                        {
+                            Dispatcher.Invoke(() =>
+                            {
+                                StartApplications_Click(null, null);
+                            });
+                        }
+                        break;
+                    case States.recordingReady:
+                        if(receivedString.Contains(startRecording))
+                        {
+                            Dispatcher.Invoke(() =>
+                            {
+                                myRecordingInterface.startRecording();
+                            });
+                        }
+                        break;
+                    case States.isRecording:
+                        if(receivedString.Contains(stopRecording))
+                        {
+                            Dispatcher.Invoke(() =>
+                            {
+                                myRecordingInterface.buttonStopRecording_Click(null, null);
+                            });
+                        }
+                        break;
+                    case States.RecordingStop:
+                        if(receivedString.Contains(finish))
+                        {
+                            Dispatcher.Invoke(() =>
+                            {
+                                myRecordingInterface.buttonFinish_Click(null, null);
+                            });
+                        }
+                        break;
+                }
+            }
+            myRemoteControlTCPListener.Stop();
+        }
+        #endregion
+
+        
     }
 }

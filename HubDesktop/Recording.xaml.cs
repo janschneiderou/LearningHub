@@ -170,9 +170,10 @@ namespace HubDesktop
             }
             buttonStartRecording.IsEnabled = false;
             buttonStopRecording.IsEnabled = true;
+            MainWindow.myState = MainWindow.States.isRecording;
         }
 
-        private void buttonStopRecording_Click(object sender, RoutedEventArgs e)
+        public void buttonStopRecording_Click(object sender, RoutedEventArgs e)
         {
             foreach (ApplicationClass apps in parent.myEnabledApps)
             {
@@ -184,7 +185,7 @@ namespace HubDesktop
             parent.handleXAPIAsync();
             buttonStartRecording.IsEnabled = false;
             buttonStopRecording.IsEnabled = false;
-
+            MainWindow.myState = MainWindow.States.RecordingStop;
             waitingForUpload = new Thread(new ThreadStart(uploadListener));
             waitingForUpload.Start();
         }
@@ -215,13 +216,15 @@ namespace HubDesktop
             });
         }
 
-        private void buttonFinish_Click(object sender, RoutedEventArgs e)
+        public void buttonFinish_Click(object sender, RoutedEventArgs e)
         {
             foreach (ApplicationClass app in parent.myEnabledApps)
             {
                 app.closeApp();
             }
+            parent.startAgain();
+            MainWindow.myState = MainWindow.States.menu;
 
-            }
+        }
     }
 }

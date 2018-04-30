@@ -5,8 +5,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Sockets;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -41,6 +44,9 @@ namespace VisualTest
         double topValueSpace = 100;
         Line myTimelineLine;
         double frameLength;
+       
+
+        
 
         public MainWindow()
         {
@@ -48,8 +54,11 @@ namespace VisualTest
             recordingObject = new List<RecordingObject>();
             valuesScroll.Width = this.Width;
             attributeNames = new List<string>();
+
+           
         }
 
+       
         private void buttonOpen_Click(object sender, RoutedEventArgs e)
         {
             buttonShow.IsEnabled = true;

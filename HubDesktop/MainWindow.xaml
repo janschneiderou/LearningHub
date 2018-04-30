@@ -25,6 +25,8 @@
         <Button Name="LAButtonDelete" Click="LAButtonDelete_Click" Content="Delete" Canvas.Left="540" Canvas.Top="427" Width="75"/>
         <Button Name="FeedbackButtonSave" Click="FeedbackButtonSave_Click" Content="Save" Canvas.Left="1084" Canvas.Top="374" Width="75"/>
         <Button Name="FeedbackButtonDelete" Click="FeedbackButtonDelete_Click" Content="Delete" Canvas.Left="1084" Canvas.Top="432" Width="75"/>
+        <TextBox Height="23" Name="controlPort" Canvas.Left="144" PreviewTextInput="TextBox_PreviewTextInput" TextWrapping="Wrap" Text="12345" Canvas.Top="523" Width="120"/>
+        <Label Content="Remote Control Port:" Height="23" Canvas.Left="16" Canvas.Top="523" Width="139"/>
 
 
 
