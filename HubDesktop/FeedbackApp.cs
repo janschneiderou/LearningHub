@@ -31,8 +31,16 @@ namespace HubDesktop
 
         public void sendUDP(string message)
         {
-            byte[] send_buffer = Encoding.ASCII.GetBytes(message);
-            udpSendingSocket.SendTo(send_buffer, UDPendPoint);
+            try
+            {
+                byte[] send_buffer = Encoding.ASCII.GetBytes(message);
+                udpSendingSocket.SendTo(send_buffer, UDPendPoint);
+            }
+            catch
+            {
+
+            }
+            
         }
 
         public async void sendTCPAsync(string message)

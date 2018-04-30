@@ -274,7 +274,7 @@ namespace HubDesktop
 
                         
                         Directory.SetCurrentDirectory(Path.Substring(0, Path.LastIndexOf("\\")));
-                        System.Diagnostics.Process.Start(Path); //Very important line for Debug
+                       System.Diagnostics.Process.Start(Path); //Very important line for Debug
                         createUDPSockets();
 
 

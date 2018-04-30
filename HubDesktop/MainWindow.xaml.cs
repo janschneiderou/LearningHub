@@ -66,7 +66,14 @@ namespace HubDesktop
                 app.closeApp();
             }
             myEnabledApps = null;
-            myRecordingInterface.isOpen = false;
+            try
+            {
+                myRecordingInterface.isOpen = false;
+            }
+           catch
+            {
+
+            }
             //base.OnExiting(sender, e);
             Environment.Exit(Environment.ExitCode);
         }

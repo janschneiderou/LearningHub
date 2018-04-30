@@ -28,19 +28,26 @@ namespace HubDesktop
         }
         public async void firstPost()
         {
-
-            var values = new Dictionary<string, string>
+            try
+            {
+                var values = new Dictionary<string, string>
             {
                 { "thing1", "hello" },
                 { "thing2", "world" }
             };
 
-            var content = new FormUrlEncodedContent(values);
-            var response = await client.PostAsync("http://wekitproject.appspot.com/storage/requestupload", content);
+                var content = new FormUrlEncodedContent(values);
+                var response = await client.PostAsync("http://wekitproject.appspot.com/storage/requestupload", content);
 
-            var responseString = await response.Content.ReadAsStringAsync();
+                var responseString = await response.Content.ReadAsStringAsync();
 
-            secondPost(responseString);
+                secondPost(responseString);
+            }
+            catch
+            {
+
+            }
+            
         }
         
         private async void secondPost(string url)
