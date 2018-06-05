@@ -245,6 +245,8 @@ namespace HubDesktop
             parent.startAgain();
             MainWindow.myState = MainWindow.States.menu;
 
+            
+
         }
     }
 }

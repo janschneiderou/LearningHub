@@ -187,15 +187,26 @@ namespace HubDesktop
         #region TCPLinsteningStuff
         private void tcpListenersStart()
         {
+
+            TcpClient client;
             myTCPListener = new TcpListener(IPAddress.Any, TCPListenerPort);
-            myTCPListener.Start();
+            try
+            {
+                myTCPListener.Start();
+            }
+            catch
+            {
+
+            }
+            
+
+
+
             while (IamRunning==true)
             {
                 try
                 {
-                    Console.WriteLine("The server is running at port 12001...");
-                    Console.WriteLine("The local End point is  :" +
-                                      myTCPListener.LocalEndpoint);
+                    //client = myTCPListener.AcceptTcpClient();
                     Console.WriteLine("Waiting for a connection.....");
 
                     Socket s = myTCPListener.AcceptSocket();
@@ -216,14 +227,18 @@ namespace HubDesktop
                     {
                         handleSendFileMessage(receivedString);
                     }
+                    s.Close();
+                  //  client.Close();
                 }
                 catch
                 {
 
                 }
-                
+               
+
             }
             myTCPListener.Stop();
+           
            // myTCPListener.clo
         }
 
@@ -327,7 +342,8 @@ namespace HubDesktop
         {
             IamRunning = false;
             myTCPListener.Stop();
-            myTCPListener.ExclusiveAddressUse = false;
+            tcpListenerThread.Abort();
+            udpListenerThread.Abort();
         }
         //closes application
         public void closeApp()

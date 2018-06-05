@@ -35,6 +35,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
@@ -60,6 +61,7 @@ namespace HubDesktop
         List<FeedbackApp> myFeedbacks;
         List<LAApplication> myLAApps;
 
+        bool restart = false;
         Recording myRecordingInterface;
         DataSet appsDataSet;
         DataSet LAAppsDataSet;
@@ -97,7 +99,7 @@ namespace HubDesktop
             setAppsTable();
             Loaded += MainWindow_Loaded;
 
-           
+            //System.Diagnostics.Process.Start(@"C:\Users\jan\source\repos\LearningHub\HubDesktop\bin\Debug\restart.bat");
 
             this.Closing += MainWindow_Closing;
         }
@@ -114,6 +116,31 @@ namespace HubDesktop
         {
             MainCanvas.Children.Remove(myRecordingInterface);
             myRecordingInterface = null;
+
+            //TODO
+            string pathString = workingDirectory + "\\restart.bat";
+            string pathApp = workingDirectory + "\\HubDesktop.exe";
+
+
+
+            if (!System.IO.File.Exists(pathString))
+            {
+                StreamWriter w = new StreamWriter(pathString);
+                w.WriteLine("timeout /t  3");
+                w.WriteLine("Start "+"\"\" \"" + pathApp +"\"");
+                w.Close();
+
+
+            }
+
+            //restart = true;
+            Directory.SetCurrentDirectory(workingDirectory);
+            System.Diagnostics.Process.Start(pathString);
+            Application.Current.MainWindow.Close();
+
+            //Application.Current.Shutdown();
+
+
         }
 
         private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -133,7 +160,13 @@ namespace HubDesktop
 
             }
             //base.OnExiting(sender, e);
+            if (restart == true)
+            {
+                
+               // System.Diagnostics.Process.Start(workingDirectory + "\\HubDeskTop.exe"); //Very important line for Debug
+            }
             Environment.Exit(Environment.ExitCode);
+          
         }
 
         private void setAppsTable()
@@ -369,6 +402,8 @@ namespace HubDesktop
         
         private void StartApplications_Click(object sender, RoutedEventArgs e)
         {
+           // System.Diagnostics.Process.Start(@"C:\Users\jan\source\repos\LearningHub\HubDesktop\bin\Debug\restart.bat");
+
             saveApplications();
             saveLAApplications();
             SaveFeedbackApplications();

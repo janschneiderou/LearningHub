@@ -75,10 +75,14 @@ namespace VisualTest
             valuesScroll.Width = this.Width;
             attributeNames = new List<string>();
 
-           
+
+
+            
+           // System.Diagnostics.Process.Start(@"C:\Users\jan\source\repos\LearningHub\HubDesktop\bin\Debug\restart.bat");
+
         }
 
-       
+
         private void buttonOpen_Click(object sender, RoutedEventArgs e)
         {
             buttonShow.IsEnabled = true;
