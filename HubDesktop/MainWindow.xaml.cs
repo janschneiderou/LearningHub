@@ -257,7 +257,15 @@ namespace HubDesktop
             }
             Dispatcher.Invoke(() =>
             {
-                myRecordingInterface.LabelFeedback.Content = feedback;
+                try
+                {
+                    myRecordingInterface.LabelFeedback.Content = feedback;
+                }
+                catch
+                {
+
+                }
+                
             });
         }
 
@@ -317,7 +325,8 @@ namespace HubDesktop
         #region saveDeleteApps
         private void saveApplications()
         {
-            appsDataSet.Tables[0].WriteXml(Directory.GetCurrentDirectory() + "\\DataConfig\\AppsConfig.xml");
+           // appsDataSet.Tables[0].WriteXml(Directory.GetCurrentDirectory() + "\\DataConfig\\AppsConfig.xml");
+            appsDataSet.Tables[0].WriteXml(workingDirectory + "\\DataConfig\\AppsConfig.xml");
         }
 
         private void deleteApplications()
@@ -326,7 +335,8 @@ namespace HubDesktop
         }
         private void saveLAApplications()
         {
-            LAAppsDataSet.Tables[0].WriteXml(Directory.GetCurrentDirectory() + "\\DataConfig\\LAConfig.xml");
+           // LAAppsDataSet.Tables[0].WriteXml(Directory.GetCurrentDirectory() + "\\DataConfig\\LAConfig.xml");
+            LAAppsDataSet.Tables[0].WriteXml(workingDirectory + "\\DataConfig\\LAConfig.xml");
         }
         private void deleteAApplications()
         {
@@ -334,7 +344,8 @@ namespace HubDesktop
         }
         private void SaveFeedbackApplications()
         {
-            FeedbackAppsDataSet.Tables[0].WriteXml(Directory.GetCurrentDirectory() + "\\DataConfig\\FeedbackConfig.xml");
+            //FeedbackAppsDataSet.Tables[0].WriteXml(Directory.GetCurrentDirectory() + "\\DataConfig\\FeedbackConfig.xml");
+            FeedbackAppsDataSet.Tables[0].WriteXml(workingDirectory + "\\DataConfig\\FeedbackConfig.xml");
         }
         private void DeleteFeedbackApplications()
         {

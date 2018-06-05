@@ -191,31 +191,40 @@ namespace HubDesktop
             myTCPListener.Start();
             while (IamRunning==true)
             {
-                Console.WriteLine("The server is running at port 12001...");
-                Console.WriteLine("The local End point is  :" +
-                                  myTCPListener.LocalEndpoint);
-                Console.WriteLine("Waiting for a connection.....");
-
-                Socket s = myTCPListener.AcceptSocket();
-                Console.WriteLine("Connection accepted from " + s.RemoteEndPoint);
-
-                byte[] b = new byte[100];
-
-                int k = s.Receive(b);
-                Console.WriteLine("Recieved...");
-                string receivedString = System.Text.Encoding.UTF8.GetString(b);
-
-                if (receivedString.Contains(IamReady))
+                try
                 {
-                    isREady = true;
-                   
+                    Console.WriteLine("The server is running at port 12001...");
+                    Console.WriteLine("The local End point is  :" +
+                                      myTCPListener.LocalEndpoint);
+                    Console.WriteLine("Waiting for a connection.....");
+
+                    Socket s = myTCPListener.AcceptSocket();
+                    Console.WriteLine("Connection accepted from " + s.RemoteEndPoint);
+
+                    byte[] b = new byte[100];
+
+                    int k = s.Receive(b);
+                    Console.WriteLine("Recieved...");
+                    string receivedString = System.Text.Encoding.UTF8.GetString(b);
+
+                    if (receivedString.Contains(IamReady))
+                    {
+                        isREady = true;
+
+                    }
+                    if (receivedString.Contains(SendFile))
+                    {
+                        handleSendFileMessage(receivedString);
+                    }
                 }
-                if(receivedString.Contains(SendFile))
+                catch
                 {
-                    handleSendFileMessage(receivedString);
+
                 }
+                
             }
             myTCPListener.Stop();
+           // myTCPListener.clo
         }
 
         private void handleSendFileMessage(string receivedString)
@@ -317,10 +326,13 @@ namespace HubDesktop
         public void close()
         {
             IamRunning = false;
+            myTCPListener.Stop();
+            myTCPListener.ExclusiveAddressUse = false;
         }
         //closes application
         public void closeApp()
         {
+            close();
             try
             {
                // myRunningThread.Abort();
