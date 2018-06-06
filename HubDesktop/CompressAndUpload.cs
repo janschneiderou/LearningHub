@@ -98,6 +98,7 @@ namespace HubDesktop
             int c = form.Count();
             var response = await client.PostAsync(url, form);
             var responseString = await response.Content.ReadAsStringAsync();
+           // int x = 1;
         }
 
         public byte[] FileToByteArray(string fileName)

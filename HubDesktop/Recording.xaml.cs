@@ -180,8 +180,9 @@ namespace HubDesktop
 
         public void startRecording()
         {
-            recordingID = DateTime.Now.Hour.ToString();
-            recordingID = recordingID + "H" + DateTime.Now.Minute.ToString() + "M" + DateTime.Now.Second.ToString() + "S";
+            recordingID = DateTime.Now.Year.ToString() + "-" +DateTime.Now.Month.ToString()+"-"+DateTime.Now.Day+"-";
+            recordingID = recordingID + DateTime.Now.Hour.ToString();
+            recordingID = recordingID + "H" + DateTime.Now.Minute.ToString() + "M" + DateTime.Now.Second.ToString() + "S" + DateTime.Now.Millisecond.ToString();
             
             foreach (ApplicationClass apps in parent.myEnabledApps)
             {
