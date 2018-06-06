@@ -512,6 +512,7 @@ namespace HubDesktop
                     case States.isRecording:
                         if(receivedString.Contains(stopRecording))
                         {
+                            sendFileName(s.RemoteEndPoint);
                             Dispatcher.Invoke(() =>
                             {
                                 myRecordingInterface.buttonStopRecording_Click(null, null);
@@ -531,8 +532,14 @@ namespace HubDesktop
             }
             myRemoteControlTCPListener.Stop();
         }
+
+        private void sendFileName(EndPoint remoteEndPoint)
+        {
+            string stringToSend = myRecordingInterface.recordingID +".zip";
+            //TODO send this string to the remoteEndPoint
+        }
         #endregion
 
-        
+
     }
 }

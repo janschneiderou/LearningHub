@@ -50,7 +50,7 @@ namespace HubDesktop
         bool everythingReady = false;
         Thread threadWaitingForReady;
         Thread waitingForUpload;
-        string recordingID;
+        public string recordingID;
         public bool isOpen = true;
 
         #region initialization
