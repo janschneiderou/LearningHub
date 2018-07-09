@@ -233,7 +233,7 @@ namespace HubDesktop
             Dispatcher.Invoke(() =>
             {
                 buttonFinish.Visibility = Visibility.Visible;
-                CompressAndUpload ca = new CompressAndUpload(MainWindow.workingDirectory + "\\" + recordingID, recordingID);
+                CompressAndUpload ca = new CompressAndUpload(MainWindow.workingDirectory + "\\" + recordingID, recordingID, parent.myEnabledApps );
             });
         }
 

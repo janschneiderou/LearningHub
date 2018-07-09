@@ -28,6 +28,7 @@ using System.Net.Http;
 using System.Net;
 using System.IO;
 using System.Net.Http.Headers;
+using System.Net.NetworkInformation;
 
 namespace HubDesktop
 {
@@ -36,9 +37,11 @@ namespace HubDesktop
         private static readonly HttpClient client = new HttpClient();
         string zipFileName;
         string recordingID;
+        List<ApplicationClass> myEnabledApps;
 
-        public CompressAndUpload(string path, string recordingID)
+        public CompressAndUpload(string path, string recordingID, List<ApplicationClass> myEnabledApps)
         {
+            this.myEnabledApps = myEnabledApps;
             this.recordingID = recordingID + ".zip";
             zipFileName = path + ".zip";
             ZipFile.CreateFromDirectory(path, zipFileName);
@@ -72,33 +75,63 @@ namespace HubDesktop
         
         private async void secondPost(string url)
         {
-            System.Net.Http.MultipartFormDataContent form = new MultipartFormDataContent();
+           
+                System.Net.Http.MultipartFormDataContent form = new MultipartFormDataContent();
 
-            var fileContent = new ByteArrayContent(FileToByteArray(zipFileName));
-
-            var values = new Dictionary<string, string>
+                var fileContent = new ByteArrayContent(FileToByteArray(zipFileName));
+                var header = new ContentDispositionHeaderValue("form-data");
+                header.Name = "\"myFile\"";
+                header.FileName = "\"" + recordingID + "\"";
+                //header.FileNameStar = fileName;
+                fileContent.Headers.ContentDisposition = header;
+                fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse("application/x-zip-compressed");
+                form.Add(fileContent, "myFile", recordingID);
+                //fixed parameters
+                string macAddress = NetworkInterface.GetAllNetworkInterfaces().Where(nic => nic.OperationalStatus == OperationalStatus.Up).Select(nic => nic.GetPhysicalAddress().ToString()).FirstOrDefault();
+                string userName = System.Security.Principal.WindowsIdentity.GetCurrent().Name;
+                form.Add(new StringContent("LearningHub " + macAddress), "\"device\"");
+                form.Add(new StringContent(userName), "\"author\"");
+            string myapps = "";
+            foreach(ApplicationClass ap in myEnabledApps)
             {
-                { "device", "LearningHub" },
-                { "author", "JanMac" },
-                { "description", "PTMYOVideo" }
-            };
+                myapps = myapps+ap.Name + "_";
+            }
+                form.Add(new StringContent(myapps), "\"description\"");
+                
 
-            var content = new FormUrlEncodedContent(values);
 
-            var header = new ContentDispositionHeaderValue("form-data");
-            header.Name = "\"myFile\"";
-            header.FileName = "\"" + recordingID + "\"";
-            //header.FileNameStar = fileName;
-            fileContent.Headers.ContentDisposition = header;
+                int c = form.Count();
+                var response = await client.PostAsync(url, form);
+                var responseString = await response.Content.ReadAsStringAsync();
+            
 
-            fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse("application/x-zip-compressed");
-            form.Add(fileContent, "myFile", recordingID);
-            form.Add(content);
+            // System.Net.Http.MultipartFormDataContent form = new MultipartFormDataContent();
 
-            int c = form.Count();
-            var response = await client.PostAsync(url, form);
-            var responseString = await response.Content.ReadAsStringAsync();
-           // int x = 1;
+            // var fileContent = new ByteArrayContent(FileToByteArray(zipFileName));
+
+            // var values = new Dictionary<string, string>
+            // {
+            //     { "device", "LearningHub" },
+            //     { "author", "JanMac" },
+            //     { "description", "PTMYOVideo" }
+            // };
+
+            // var content = new FormUrlEncodedContent(values);
+
+            // var header = new ContentDispositionHeaderValue("form-data");
+            // header.Name = "\"myFile\"";
+            // header.FileName = "\"" + recordingID + "\"";
+            // //header.FileNameStar = fileName;
+            // fileContent.Headers.ContentDisposition = header;
+
+            // fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse("application/x-zip-compressed");
+            // form.Add(fileContent, "myFile", recordingID);
+            // form.Add(content);
+
+            // int c = form.Count();
+            // var response = await client.PostAsync(url, form);
+            // var responseString = await response.Content.ReadAsStringAsync();
+            //// int x = 1;
         }
 
         public byte[] FileToByteArray(string fileName)
