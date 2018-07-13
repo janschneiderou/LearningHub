@@ -74,6 +74,7 @@ namespace ConnectorHubUW
         List<FrameObject> frames;
 
         private bool IamRunning = true;
+        public bool amIVideo = false;
 
         public void init()
         {
@@ -192,7 +193,7 @@ namespace ConnectorHubUW
             stopRecordingEvent(this);
             try
             {
-                if (myRecordingObject.applicationName.Equals("ScreencaptureTest"))
+                if (myRecordingObject.applicationName.Equals("ScreencaptureTest")||amIVideo==true)
                 {
 
                 }

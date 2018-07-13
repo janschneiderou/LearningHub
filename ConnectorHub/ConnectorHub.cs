@@ -70,6 +70,8 @@ namespace ConnectorHub
         string applicationName;
         private RecordingObject myRecordingObject;
 
+        public bool amIvideo = false;
+
         List<string> valuesNameDefinition;
         List<FrameObject> frames;
 
@@ -207,7 +209,7 @@ namespace ConnectorHub
             stopRecordingEvent(this);
             try
             {
-                if(myRecordingObject.applicationName.Equals("ScreencaptureTest"))
+                if(myRecordingObject.applicationName.Equals("ScreencaptureTest")|| amIvideo==true)
                 {
 
                 }
