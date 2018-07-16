@@ -34,6 +34,9 @@ namespace HubDesktop
 {
     public class CompressAndUpload
     {
+        public delegate void FinishedUpload(object sender);
+        public event FinishedUpload finishedUploadingEvent;
+
         private static readonly HttpClient client = new HttpClient();
         string zipFileName;
         string recordingID;
@@ -103,35 +106,10 @@ namespace HubDesktop
                 int c = form.Count();
                 var response = await client.PostAsync(url, form);
                 var responseString = await response.Content.ReadAsStringAsync();
-            
 
-            // System.Net.Http.MultipartFormDataContent form = new MultipartFormDataContent();
+                finishedUploadingEvent(null);
 
-            // var fileContent = new ByteArrayContent(FileToByteArray(zipFileName));
 
-            // var values = new Dictionary<string, string>
-            // {
-            //     { "device", "LearningHub" },
-            //     { "author", "JanMac" },
-            //     { "description", "PTMYOVideo" }
-            // };
-
-            // var content = new FormUrlEncodedContent(values);
-
-            // var header = new ContentDispositionHeaderValue("form-data");
-            // header.Name = "\"myFile\"";
-            // header.FileName = "\"" + recordingID + "\"";
-            // //header.FileNameStar = fileName;
-            // fileContent.Headers.ContentDisposition = header;
-
-            // fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse("application/x-zip-compressed");
-            // form.Add(fileContent, "myFile", recordingID);
-            // form.Add(content);
-
-            // int c = form.Count();
-            // var response = await client.PostAsync(url, form);
-            // var responseString = await response.Content.ReadAsStringAsync();
-            //// int x = 1;
         }
 
         public byte[] FileToByteArray(string fileName)

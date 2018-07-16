@@ -180,6 +180,7 @@ namespace HubDesktop
 
         public void startRecording()
         {
+            statusLabel.Content = "recording";
             recordingID = DateTime.Now.Year.ToString() + "-" +DateTime.Now.Month.ToString()+"-"+DateTime.Now.Day+"-";
             recordingID = recordingID + DateTime.Now.Hour.ToString();
             recordingID = recordingID + "H" + DateTime.Now.Minute.ToString() + "M" + DateTime.Now.Second.ToString() + "S" + DateTime.Now.Millisecond.ToString();
@@ -209,6 +210,7 @@ namespace HubDesktop
             MainWindow.myState = MainWindow.States.RecordingStop;
             waitingForUpload = new Thread(new ThreadStart(uploadListener));
             waitingForUpload.Start();
+            statusLabel.Content = "Retrieving recordings";
         }
 
         private void uploadListener()
@@ -232,13 +234,22 @@ namespace HubDesktop
             }
             Dispatcher.Invoke(() =>
             {
-                buttonFinish.Visibility = Visibility.Visible;
+                //buttonFinish.Visibility = Visibility.Visible;
+                statusLabel.Content = "Uploading files to server";
                 CompressAndUpload ca = new CompressAndUpload(MainWindow.workingDirectory + "\\" + recordingID, recordingID, parent.myEnabledApps );
+                ca.finishedUploadingEvent += Ca_finishedUploadingEvent;
             });
+        }
+
+        private void Ca_finishedUploadingEvent(object sender)
+        {
+            buttonFinish.Visibility = Visibility.Visible;
+            statusLabel.Content = "Upload finished";
         }
 
         public void buttonFinish_Click(object sender, RoutedEventArgs e)
         {
+            
             foreach (ApplicationClass app in parent.myEnabledApps)
             {
                 app.closeApp();
