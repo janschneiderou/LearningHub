@@ -77,6 +77,8 @@ namespace ConnectorHubUW
 
         public bool amIVideo = false;
 
+        public bool IamRunning = false;
+
         public void init()
         {
 
