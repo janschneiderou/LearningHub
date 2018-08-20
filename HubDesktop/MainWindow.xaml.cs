@@ -242,52 +242,60 @@ namespace HubDesktop
                 
                
             }
-
-            FeedbackObject feed = JsonConvert.DeserializeObject<FeedbackObject>(feedback);
-
-            if (feed.verb.Equals(lastFeedbackSent.verb))
+            try
             {
+                FeedbackObject feed = JsonConvert.DeserializeObject<FeedbackObject>(feedback);
 
-            }
-            else if (feed.verb.Contains("Good"))
-            {
-
-                XAPIStuff.XAPIActor actor = new XAPIStuff.XAPIActor("id_" + lastFeedbackSent.applicationName, "application", lastFeedbackSent.applicationName);
-                XAPIStuff.XAPIVerb verb = new XAPIStuff.XAPIVerb("id", lastFeedbackSent.verb);
-                XAPIStuff.XAPIObject myObject = new XAPIStuff.XAPIObject("student", "id_student");
-                XAPIStuff.XAPIDurationContext duration = new XAPIStuff.XAPIDurationContext(feed.frameStamp.Subtract(lastFeedbackSent.frameStamp));
-                XAPIStuff.XAPIContext context = new XAPIStuff.XAPIContext(duration);
-
-                XAPIStuff.XAPIStatement myStatement = new XAPIStuff.XAPIStatement(actor, verb, myObject, context);
-
-                string xapiString = JsonConvert.SerializeObject(myStatement, Newtonsoft.Json.Formatting.Indented);
-
-
-                try
+                if (feed.verb.Equals(lastFeedbackSent.verb))
                 {
-                    foreach (LAApplication myLA in myLAApps)
-                    {
 
-                        string url = myLA.Path + xapiString;
-                        HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-                        WebResponse response = await request.GetResponseAsync();
-                        Stream resStream = response.GetResponseStream();
-                        StreamReader sr99 = new StreamReader(resStream);
-                        string aa = await sr99.ReadToEndAsync();
+                }
+                else if (feed.verb.Contains("Good"))
+                {
+
+
+                    XAPIStuff.XAPIActor actor = new XAPIStuff.XAPIActor("id_" + lastFeedbackSent.applicationName, "application", lastFeedbackSent.applicationName);
+                    XAPIStuff.XAPIVerb verb = new XAPIStuff.XAPIVerb("id", lastFeedbackSent.verb);
+                    XAPIStuff.XAPIObject myObject = new XAPIStuff.XAPIObject("student", "id_student");
+                    XAPIStuff.XAPIDurationContext duration = new XAPIStuff.XAPIDurationContext(feed.frameStamp.Subtract(lastFeedbackSent.frameStamp));
+                    XAPIStuff.XAPIContext context = new XAPIStuff.XAPIContext(duration);
+
+                    XAPIStuff.XAPIStatement myStatement = new XAPIStuff.XAPIStatement(actor, verb, myObject, context);
+
+                    string xapiString = JsonConvert.SerializeObject(myStatement, Newtonsoft.Json.Formatting.Indented);
+
+
+                    try
+                    {
+                        foreach (LAApplication myLA in myLAApps)
+                        {
+
+                            string url = myLA.Path + xapiString;
+                            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+                            WebResponse response = await request.GetResponseAsync();
+                            Stream resStream = response.GetResponseStream();
+                            StreamReader sr99 = new StreamReader(resStream);
+                            string aa = await sr99.ReadToEndAsync();
+
+                        }
 
                     }
-
+                    catch (Exception E)
+                    {
+                        Console.WriteLine("error trying to post to server");
+                    }
+                    lastFeedbackSent = feed;
                 }
-                catch (Exception E)
+                else
                 {
-                    Console.WriteLine("error trying to post to server");
+                    lastFeedbackSent = feed;
                 }
-                lastFeedbackSent = feed;
             }
-            else
+            catch
             {
-                lastFeedbackSent = feed;
+
             }
+            
             Dispatcher.Invoke(() =>
             {
                 try
