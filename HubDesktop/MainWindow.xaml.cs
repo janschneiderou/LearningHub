@@ -329,7 +329,8 @@ namespace HubDesktop
                 int uDPListener = (int)r[6];
                 int uDPSender = (int)r[7];
                 bool usedBool = (bool)r[8];
-                ApplicationClass app = new ApplicationClass(applicationName, path, remoteBool, tCPListener, tCPSender, tCPFile, uDPListener,  uDPSender, usedBool, this);
+                bool isVideo = (bool)r[9];
+                ApplicationClass app = new ApplicationClass(applicationName, path, remoteBool, tCPListener, tCPSender, tCPFile, uDPListener,  uDPSender, usedBool, isVideo, this);
                 myApps.Add(app);
                 if (app.usedBool == true)
                 {

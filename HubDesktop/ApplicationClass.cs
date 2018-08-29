@@ -50,6 +50,8 @@ namespace HubDesktop
 
         private Thread udpListenerThread;
 
+        private Thread tcpFileThread;
+
         public bool IamRunning = true;
         public bool isRunning = false;
         public bool isEnabled = false;
@@ -67,6 +69,7 @@ namespace HubDesktop
         public int UDPListenerPort { get; set; }
         public int UDPSenderPort { get; set; }
         public bool usedBool { get; set; }
+        public bool isVideo { get; set; }
         public string Name { get; set; }
         string currentUDPString { get; set; }
         string recordingID;
@@ -78,7 +81,7 @@ namespace HubDesktop
         #region initialization
         public ApplicationClass(string applicationName, string filePath, 
             bool remoteBool, int TCPListener, int TCPSender, int tCPFile,  int UDPListener, 
-            int UDPSender, bool usedBool, MainWindow Parent)
+            int UDPSender, bool usedBool, bool isVideo,  MainWindow Parent)
         {
             
             this.Path = filePath;
@@ -91,6 +94,7 @@ namespace HubDesktop
             this.UDPListenerPort = UDPListener;
             this.UDPSenderPort = UDPSender;
             this.usedBool = usedBool;
+            this.isVideo = isVideo;
             
             createSockets();
             //receivingUdp = new UdpClient(this.listeningPort);
@@ -120,6 +124,9 @@ namespace HubDesktop
         public void sendStartRecording(string recordingID)
         {
             this.recordingID = recordingID;
+
+            
+
             sendTCPAsync(StartRecording+recordingID+","+Name+endStartRecording);
         }
 
@@ -127,7 +134,7 @@ namespace HubDesktop
 
         public void sendStopRecording()
         {
-            Thread tcpFileThread;
+           // Thread tcpFileThread;
             uploadReady = false;
             if (Directory.Exists(MainWindow.workingDirectory + "\\" + recordingID))
             {
@@ -138,10 +145,13 @@ namespace HubDesktop
                 DirectoryInfo di = Directory.CreateDirectory(MainWindow.workingDirectory + "\\" + recordingID);
 
             }
-
-            currentFileName = MainWindow.workingDirectory +"\\"+ recordingID + "\\"+recordingID+ Name +".json";
-            tcpFileThread = new  Thread(new ThreadStart(ReceiveFileTCP));
-            tcpFileThread.Start();
+            if(isVideo==false)
+            {
+                currentFileName = MainWindow.workingDirectory + "\\" + recordingID + "\\" + recordingID + Name + ".json";
+                tcpFileThread = new Thread(new ThreadStart(ReceiveFileTCP));
+                tcpFileThread.Start();
+            }
+            
             sendTCPAsync(StopRecording);
         }
 
@@ -220,7 +230,16 @@ namespace HubDesktop
 
                     if (receivedString.Contains(IamReady))
                     {
+
                         isREady = true;
+                        for(int i=0;i<Parent.myEnabledApps.Count;i++)
+                        {
+                            if(Parent.myEnabledApps[i].Name == this.Name)
+                            {
+                                Parent.myEnabledApps[i].isREady = isREady;
+                                break;
+                            }
+                        }
 
                     }
                     if (receivedString.Contains(SendFile))
@@ -245,13 +264,26 @@ namespace HubDesktop
         private void handleSendFileMessage(string receivedString)
         {
             uploadReady = false;
-            Thread tcpFileThread;
+            //Thread tcpFileThread;
             //"<SEND FILE>myFile.avi</SEND FILE>"
             int startIndex = receivedString.IndexOf(">") + 1;
             int startIndex2 = receivedString.IndexOf("</") + 1;
             int startIndex3 = receivedString.IndexOf("");
             int length = startIndex2 - startIndex;
             string filename = receivedString.Substring(startIndex, length - 1);
+
+            if(recordingID==null)
+            {
+                for (int i = 0; i < Parent.myEnabledApps.Count; i++)
+                {
+                    if (Parent.myEnabledApps[i].Name == this.Name)
+                    {
+                        recordingID = Parent.myEnabledApps[i].recordingID;
+                        break;
+                    }
+                }
+            }
+
 
             if (Directory.Exists(MainWindow.workingDirectory + "\\" + recordingID))
             {
@@ -264,6 +296,19 @@ namespace HubDesktop
             }
 
             currentFileName = MainWindow.workingDirectory + "\\" + recordingID + "\\" + filename;
+
+            try
+            {
+                if(tcpFileThread != null)
+                {
+                    tcpFileThread.Abort();
+                }
+            }
+            catch
+            {
+
+            }
+
             tcpFileThread = new Thread(new ThreadStart(ReceiveFileTCP));
             tcpFileThread.Start();
             sendTCPAsync(receivedString);
@@ -459,7 +504,16 @@ namespace HubDesktop
                         
                         netstream.Close();
                         client.Close();
-                        uploadReady = true;
+                        for (int i = 0; i < Parent.myEnabledApps.Count; i++)
+                        {
+                            if (Parent.myEnabledApps[i].Name == this.Name)
+                            {
+                                uploadReady = true;
+                                Parent.myEnabledApps[i].uploadReady=true;
+                                break;
+                            }
+                        }
+                        
 
                     }
                 }

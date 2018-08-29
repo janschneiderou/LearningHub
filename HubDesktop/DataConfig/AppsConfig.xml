@@ -1,28 +1,120 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<Applications xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-xsi:noNamespaceSchemaLocation="AppsSchema.xsd">
+﻿<?xml version="1.0" standalone="yes"?>
+<Applications>
   <Application>
     <Name>PresentationTrainer</Name>
-    <Path>C:\Users\jan\source\repos\PT2016\PresentationTrainer\bin\x64\Debug\PresentationTrainer.exe</Path>
-    <Remote >false</Remote>
+    <Path>C:\Users\jan\source\repos\PT2016\PresentationTrainer\bin\x64\Release\PresentationTrainer.exe</Path>
+    <Remote>false</Remote>
     <TCPListener>11001</TCPListener>
     <TCPSender>12001</TCPSender>
     <TCPFile>13001</TCPFile>
     <UDPListener>14001</UDPListener>
-    <UDPSender>15001</UDPSender>
-    <Used>true</Used>
+    <UDPSender>25001</UDPSender>
+    <Used>false</Used>
+    <VideoAudio>false</VideoAudio>
     <xAPIUri>blank</xAPIUri>
   </Application>
   <Application>
-    <Name>notepad</Name>
-    <Path>notepad.exe</Path>
-    <Remote >false</Remote>
-    <TCPListener>23432</TCPListener>
-    <TCPSender>3</TCPSender>
-    <TCPFile>13001</TCPFile>
-    <UDPListener>32</UDPListener>
-    <UDPSender>342</UDPSender>
+    <Name>ScreenCaptureForm</Name>
+    <Path>C:\Users\jan\source\repos\ScreenCaptureForm\ScreenCaptureForm\bin\Debug\ScreenCaptureForm.exe</Path>
+    <Remote>false</Remote>
+    <TCPListener>11002</TCPListener>
+    <TCPSender>12002</TCPSender>
+    <TCPFile>13002</TCPFile>
+    <UDPListener>14002</UDPListener>
+    <UDPSender>25002</UDPSender>
+    <Used>false</Used>
+    <VideoAudio>true</VideoAudio>
+    <xAPIUri>blank</xAPIUri>
+  </Application>
+  <Application>
+    <Name>MyoTest</Name>
+    <Path>C:\Users\jan\source\repos\MyoTest\MyoTest\MyoTest\bin\Debug\MyoTest.exe</Path>
+    <Remote>false</Remote>
+    <TCPListener>11004</TCPListener>
+    <TCPSender>12004</TCPSender>
+    <TCPFile>13004</TCPFile>
+    <UDPListener>14004</UDPListener>
+    <UDPSender>25004</UDPSender>
+    <Used>false</Used>
+    <VideoAudio>false</VideoAudio>
+    <xAPIUri>blank</xAPIUri>
+  </Application>
+  <Application>
+    <Name>LeapExample</Name>
+    <Path>C:\Users\jan\source\repos\LeapExample\LeapExample\bin\Debug\LeapExample.exe</Path>
+    <Remote>false</Remote>
+    <TCPListener>11005</TCPListener>
+    <TCPSender>12005</TCPSender>
+    <TCPFile>13005</TCPFile>
+    <UDPListener>14005</UDPListener>
+    <UDPSender>25005</UDPSender>
+    <Used>false</Used>
+    <VideoAudio>false</VideoAudio>
+    <xAPIUri>blank</xAPIUri>
+  </Application>
+  <Application>
+    <Name>KinectReader</Name>
+    <Path>C:\Users\jan\source\repos\KinectReader\KinectReader\bin\Debug\KinectReader.exe</Path>
+    <Remote>false</Remote>
+    <TCPListener>11006</TCPListener>
+    <TCPSender>12006</TCPSender>
+    <TCPFile>13006</TCPFile>
+    <UDPListener>14006</UDPListener>
+    <UDPSender>25006</UDPSender>
+    <Used>false</Used>
+    <VideoAudio>false</VideoAudio>
+    <xAPIUri>blank</xAPIUri>
+  </Application>
+  <Application>
+    <Name>PTSimulation</Name>
+    <Path>C:\Users\jan\source\repos\PTSimulation\PTSimulation\bin\Debug\PTSimulation.exe</Path>
+    <Remote>false</Remote>
+    <TCPListener>11007</TCPListener>
+    <TCPSender>12007</TCPSender>
+    <TCPFile>13007</TCPFile>
+    <UDPListener>14007</UDPListener>
+    <UDPSender>25007</UDPSender>
     <Used>true</Used>
+    <VideoAudio>false</VideoAudio>
+    <xAPIUri>blank</xAPIUri>
+  </Application>
+  <Application>
+    <Name>WebcamCapture</Name>
+    <Path>C:\Users\jan\source\repos\WebcamCapture\WebcamCapture\bin\Debug\WebcamCapture.exe</Path>
+    <Remote>false</Remote>
+    <TCPListener>11008</TCPListener>
+    <TCPSender>12008</TCPSender>
+    <TCPFile>13008</TCPFile>
+    <UDPListener>14008</UDPListener>
+    <UDPSender>25008</UDPSender>
+    <Used>false</Used>
+    <VideoAudio>true</VideoAudio>
+    <xAPIUri>blank</xAPIUri>
+  </Application>
+  <Application>
+    <Name>ConnectionTestUW</Name>
+    <Path>127.0.0.1</Path>
+    <Remote>false</Remote>
+    <TCPListener>11009</TCPListener>
+    <TCPSender>12009</TCPSender>
+    <TCPFile>13009</TCPFile>
+    <UDPListener>14009</UDPListener>
+    <UDPSender>25009</UDPSender>
+    <Used>false</Used>
+    <VideoAudio>false</VideoAudio>
+    <xAPIUri>blank</xAPIUri>
+  </Application>
+  <Application>
+    <Name>WebcamCapture</Name>
+    <Path>127.0.0.1</Path>
+    <Remote>true</Remote>
+    <TCPListener>11008</TCPListener>
+    <TCPSender>12008</TCPSender>
+    <TCPFile>13008</TCPFile>
+    <UDPListener>14008</UDPListener>
+    <UDPSender>25008</UDPSender>
+    <Used>true</Used>
+    <VideoAudio>true</VideoAudio>
     <xAPIUri>blank</xAPIUri>
   </Application>
 </Applications>
