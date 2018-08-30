@@ -126,7 +126,7 @@ namespace HubDesktop
             if (!System.IO.File.Exists(pathString))
             {
                 StreamWriter w = new StreamWriter(pathString);
-                w.WriteLine("timeout /t  3");
+                w.WriteLine("timeout /t  5");
                 w.WriteLine("Start "+"\"\" \"" + pathApp +"\"");
                 w.Close();
 

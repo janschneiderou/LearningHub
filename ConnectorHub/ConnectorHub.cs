@@ -135,6 +135,7 @@ namespace ConnectorHub
 
             UDPendPoint = new IPEndPoint(serverAddr, UDPSenderPort);
             tcpListenerThread = new Thread(new ThreadStart(tcpListenersStart));
+            tcpListenerThread.IsBackground = true;
             tcpListenerThread.Start();
           
         }
@@ -359,6 +360,7 @@ namespace ConnectorHub
         {
             IamRunning = false;
             myTCPListener.Stop();
+            tcpListenerThread.Abort();
         }
 
         #endregion

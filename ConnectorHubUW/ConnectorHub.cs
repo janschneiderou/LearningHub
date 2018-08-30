@@ -417,6 +417,7 @@ namespace ConnectorHubUW
         public void close()
         {
             IamRunning = false;
+           
           //  myTCPListener.Stop();
         }
 

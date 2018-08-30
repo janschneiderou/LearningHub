@@ -103,6 +103,7 @@ namespace HubDesktop
         private void createSockets()
         {
             tcpListenerThread = new Thread(new ThreadStart(tcpListenersStart));
+            tcpListenerThread.IsBackground = true;
             tcpListenerThread.Start();
             
         }
@@ -111,6 +112,7 @@ namespace HubDesktop
         {
             receivingUdp = new UdpClient(this.UDPListenerPort);
             udpListenerThread = new Thread(new ThreadStart(myUDPThreadFunction));
+            udpListenerThread.IsBackground = true;
             udpListenerThread.Start();
         }
 

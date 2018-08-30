@@ -74,6 +74,7 @@ namespace ConnectorHub
         {
             receivingUdp = new UdpClient(this.UDPListenerPort);
             udpListenerThread = new Thread(new ThreadStart(myUDPThreadFunction));
+            udpListenerThread.IsBackground = true;
             isRunning = true;
             udpListenerThread.Start();
         }
@@ -111,6 +112,14 @@ namespace ConnectorHub
         private void handleUDPPackage()
         {
             feedbackReceivedEvent(this, currentUDPString);
+        }
+
+
+        public void close()
+        {
+            //IamRunning = false;
+            receivingUdp.Close();
+            udpListenerThread.Abort();
         }
     }
 }
