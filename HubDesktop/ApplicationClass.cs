@@ -398,7 +398,7 @@ namespace HubDesktop
             try
             {
                // myRunningThread.Abort();
-                if (Path.Equals("remoteApp"))
+                if (Path.Equals("remoteApp")||remoteBool==true)
                 {
 
                 }
