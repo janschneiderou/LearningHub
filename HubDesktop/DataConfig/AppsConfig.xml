@@ -3,6 +3,7 @@
   <Application>
     <Name>PresentationTrainer</Name>
     <Path>C:\Users\jan\source\repos\PT2016\PresentationTrainer\bin\x64\Release\PresentationTrainer.exe</Path>
+    <Parameter></Parameter>
     <Remote>false</Remote>
     <TCPListener>11001</TCPListener>
     <TCPSender>12001</TCPSender>
@@ -16,6 +17,7 @@
   <Application>
     <Name>ScreenCaptureForm</Name>
     <Path>C:\Users\jan\source\repos\ScreenCaptureForm\ScreenCaptureForm\bin\Debug\ScreenCaptureForm.exe</Path>
+    <Parameter></Parameter>
     <Remote>false</Remote>
     <TCPListener>11002</TCPListener>
     <TCPSender>12002</TCPSender>
@@ -29,6 +31,7 @@
   <Application>
     <Name>MyoTest</Name>
     <Path>C:\Users\jan\source\repos\MyoTest\MyoTest\MyoTest\bin\Debug\MyoTest.exe</Path>
+    <Parameter></Parameter>
     <Remote>false</Remote>
     <TCPListener>11004</TCPListener>
     <TCPSender>12004</TCPSender>
@@ -42,6 +45,7 @@
   <Application>
     <Name>LeapExample</Name>
     <Path>C:\Users\jan\source\repos\LeapExample\LeapExample\bin\Debug\LeapExample.exe</Path>
+    <Parameter></Parameter>
     <Remote>false</Remote>
     <TCPListener>11005</TCPListener>
     <TCPSender>12005</TCPSender>
@@ -55,6 +59,7 @@
   <Application>
     <Name>KinectReader</Name>
     <Path>C:\Users\jan\source\repos\KinectReader\KinectReader\bin\Debug\KinectReader.exe</Path>
+    <Parameter></Parameter>
     <Remote>false</Remote>
     <TCPListener>11006</TCPListener>
     <TCPSender>12006</TCPSender>
@@ -68,19 +73,21 @@
   <Application>
     <Name>PTSimulation</Name>
     <Path>C:\Users\jan\source\repos\PTSimulation\PTSimulation\bin\Debug\PTSimulation.exe</Path>
+    <Parameter></Parameter>
     <Remote>false</Remote>
     <TCPListener>11007</TCPListener>
     <TCPSender>12007</TCPSender>
     <TCPFile>13007</TCPFile>
     <UDPListener>14007</UDPListener>
     <UDPSender>25007</UDPSender>
-    <Used>true</Used>
+    <Used>false</Used>
     <VideoAudio>false</VideoAudio>
     <xAPIUri>blank</xAPIUri>
   </Application>
   <Application>
     <Name>WebcamCapture</Name>
     <Path>C:\Users\jan\source\repos\WebcamCapture\WebcamCapture\bin\Debug\WebcamCapture.exe</Path>
+    <Parameter></Parameter>
     <Remote>false</Remote>
     <TCPListener>11008</TCPListener>
     <TCPSender>12008</TCPSender>
@@ -94,6 +101,7 @@
   <Application>
     <Name>ConnectionTestUW</Name>
     <Path>127.0.0.1</Path>
+    <Parameter></Parameter>
     <Remote>false</Remote>
     <TCPListener>11009</TCPListener>
     <TCPSender>12009</TCPSender>
@@ -105,16 +113,17 @@
     <xAPIUri>blank</xAPIUri>
   </Application>
   <Application>
-    <Name>WebcamCapture</Name>
-    <Path>127.0.0.1</Path>
-    <Remote>true</Remote>
-    <TCPListener>11008</TCPListener>
-    <TCPSender>12008</TCPSender>
-    <TCPFile>13008</TCPFile>
-    <UDPListener>14008</UDPListener>
-    <UDPSender>25008</UDPSender>
+    <Name>MQTTDataProvider</Name>
+    <Path>C:\Users\Jordi Hutjens\Documents\GitHub\MQTTDataProvider\bin\Debug\MQTTDataProvider</Path>
+    <Parameter></Parameter>
+    <Remote>false</Remote>
+    <TCPListener>11010</TCPListener>
+    <TCPSender>12010</TCPSender>
+    <TCPFile>13010</TCPFile>
+    <UDPListener>14010</UDPListener>
+    <UDPSender>25010</UDPSender>
     <Used>true</Used>
-    <VideoAudio>true</VideoAudio>
+    <VideoAudio>false</VideoAudio>
     <xAPIUri>blank</xAPIUri>
   </Application>
 </Applications>
