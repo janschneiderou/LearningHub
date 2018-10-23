@@ -163,23 +163,23 @@ namespace ConnectorHub
 
                     int k = s.Receive(b);
                     Console.WriteLine("Recieved...");
-                    string receivedString = System.Text.Encoding.UTF8.GetString(b);
+                    string receivedstring = System.Text.Encoding.UTF8.GetString(b);
 
-                    if (receivedString.Contains(StartRecording))
+                    if (receivedstring.Contains(StartRecording))
                     {
-                        doStartStuff(receivedString);
+                        doStartStuff(receivedstring);
                         
                     }
-                    else if (receivedString.Contains(StopRecording))
+                    else if (receivedstring.Contains(StopRecording))
                     {
                         
                         doStopStuff();
                     }
-                    else if(receivedString.Contains(SendFile))
+                    else if(receivedstring.Contains(SendFile))
                     {
-                        handleSendFile(receivedString);
+                        handleSendFile(receivedstring);
                     }
-                    else if (receivedString.Contains(areYouReady))
+                    else if (receivedstring.Contains(areYouReady))
                     {
                         sendReady();
                     }
@@ -193,14 +193,14 @@ namespace ConnectorHub
             
         }
 
-        private void handleSendFile(string receivedString)
+        private void handleSendFile(string receivedstring)
         {
             //"<SEND FILE>myFile.avi</SEND FILE>"
-            int startIndex = receivedString.IndexOf(">") + 1;
-            int startIndex2 = receivedString.IndexOf("</") + 1;
+            int startIndex = receivedstring.IndexOf(">") + 1;
+            int startIndex2 = receivedstring.IndexOf("</") + 1;
             
             int length = startIndex2 - startIndex;
-            string filename = receivedString.Substring(startIndex, length - 1);
+            string filename = receivedstring.Substring(startIndex, length - 1);
             sendFileTCP(filename);
         }
 
@@ -232,18 +232,18 @@ namespace ConnectorHub
             }
         }
 
-        private void doStartStuff(string receivedString)
+        private void doStartStuff(string receivedstring)
         {
             startRecordingTime = DateTime.Now;
             //"<START RECORDING>recordinID,ApplicationID</START RECORDING>"
-            int startIndex = receivedString.IndexOf(">")+1;
-            int startIndex2 = receivedString.IndexOf(",") + 1;
-            int startIndex3 = receivedString.IndexOf("</");
+            int startIndex = receivedstring.IndexOf(">")+1;
+            int startIndex2 = receivedstring.IndexOf(",") + 1;
+            int startIndex3 = receivedstring.IndexOf("</");
             int length = startIndex2- startIndex;
             int length2 = startIndex3 - startIndex2;
             myRecordingObject = new RecordingObject();
-            myRecordingObject.recordingID = receivedString.Substring(startIndex,length-1);
-            myRecordingObject.applicationName = receivedString.Substring(startIndex2, length2);
+            myRecordingObject.recordingID = receivedstring.Substring(startIndex,length-1);
+            myRecordingObject.applicationName = receivedstring.Substring(startIndex2, length2);
             startRecordingEvent(this);
             startedByHub = true;
         }

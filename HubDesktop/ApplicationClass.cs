@@ -63,7 +63,7 @@ namespace HubDesktop
         int listeningPort;
         public string Path { get; set; }
         public bool remoteBool { get; set; }
-        public string Parameter { get; set; }
+        public string Parameter { get; set; } = "blank";
         public int TCPListenerPort { get; set; }
         public int TCPSenderPort { get; set; }
         public int TCPFile { get; set; }
