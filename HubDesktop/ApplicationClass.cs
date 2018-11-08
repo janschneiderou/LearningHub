@@ -406,6 +406,11 @@ namespace HubDesktop
         {
             IamRunning = false;
             myTCPListener.Stop();
+
+        }
+
+        private void closeListenerThreads()
+        {
             tcpListenerThread.Abort();
             udpListenerThread.Abort();
         }
@@ -433,6 +438,7 @@ namespace HubDesktop
             }
             isRunning = false;
             IamRunning = false;
+            closeListenerThreads();
         }
         #endregion
 
