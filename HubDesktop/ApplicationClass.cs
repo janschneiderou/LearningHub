@@ -63,6 +63,7 @@ namespace HubDesktop
         int listeningPort;
         public string Path { get; set; }
         public bool remoteBool { get; set; }
+        public string Parameter { get; set; } = "blank";
         public int TCPListenerPort { get; set; }
         public int TCPSenderPort { get; set; }
         public int TCPFile { get; set; }
@@ -77,9 +78,10 @@ namespace HubDesktop
 
         MainWindow Parent;
         public bool isREady = false;
+        private Process process;
 
         #region initialization
-        public ApplicationClass(string applicationName, string filePath, 
+        public ApplicationClass(string applicationName, string filePath, string parameter,
             bool remoteBool, int TCPListener, int TCPSender, int tCPFile,  int UDPListener, 
             int UDPSender, bool usedBool, bool isVideo,  MainWindow Parent)
         {
@@ -87,6 +89,7 @@ namespace HubDesktop
             this.Path = filePath;
             this.Name = applicationName;
             this.Parent = Parent;
+            this.Parameter = parameter;
             this.remoteBool = remoteBool;
             this.TCPListenerPort = TCPListener;
             this.TCPSenderPort = TCPSender;
@@ -363,13 +366,25 @@ namespace HubDesktop
                             sw.WriteLine(UDPSenderPort);
                             sw.WriteLine("127.0.0.1");
                         }
-
-                        
                         Directory.SetCurrentDirectory(Path.Substring(0, Path.LastIndexOf("\\")));
-                       System.Diagnostics.Process.Start(Path); //Very important line for Debug
+
+                        if (Parameter == "")
+                        {
+                            Process.Start(Path); //Very important line for Debug
+                        }
+                        else
+                        {
+                            Process p= new Process();
+                            p.StartInfo.RedirectStandardOutput = true;
+                            p.StartInfo.UseShellExecute = false;
+                            p.StartInfo.RedirectStandardError = true;
+                            p.StartInfo.FileName = Path;
+                            p.StartInfo.Arguments = Parameter;
+                            p.Start();
+
+                        }
+                                                
                         createUDPSockets();
-
-
                     }
 
                 }
@@ -386,10 +401,16 @@ namespace HubDesktop
                 Console.WriteLine(xx);
             }
         }
+
         public void close()
         {
             IamRunning = false;
             myTCPListener.Stop();
+
+        }
+
+        private void closeListenerThreads()
+        {
             tcpListenerThread.Abort();
             udpListenerThread.Abort();
         }
@@ -417,6 +438,7 @@ namespace HubDesktop
             }
             isRunning = false;
             IamRunning = false;
+            closeListenerThreads();
         }
         #endregion
 

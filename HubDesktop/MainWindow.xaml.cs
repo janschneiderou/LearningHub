@@ -101,7 +101,7 @@ namespace HubDesktop
 
             //System.Diagnostics.Process.Start(@"C:\Users\jan\source\repos\LearningHub\HubDesktop\bin\Debug\restart.bat");
 
-            this.Closing += MainWindow_Closing;
+            Closing += MainWindow_Closing;
         }
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
@@ -322,15 +322,16 @@ namespace HubDesktop
             {
                 string applicationName = (string)r[0];
                 string path = (string)r[1];
-                bool remoteBool = (bool)r[2];
-                int tCPListener = (int)r[3];
-                int tCPSender = (int)r[4];
-                int tCPFile = (int)r[5];
-                int uDPListener = (int)r[6];
-                int uDPSender = (int)r[7];
-                bool usedBool = (bool)r[8];
-                bool isVideo = (bool)r[9];
-                ApplicationClass app = new ApplicationClass(applicationName, path, remoteBool, tCPListener, tCPSender, tCPFile, uDPListener,  uDPSender, usedBool, isVideo, this);
+                string parameter = (string)r[2];
+                bool remoteBool = (bool)r[3];
+                int tCPListener = (int)r[4];
+                int tCPSender = (int)r[5];
+                int tCPFile = (int)r[6];
+                int uDPListener = (int)r[7];
+                int uDPSender = (int)r[8];
+                bool usedBool = (bool)r[9];
+                bool isVideo = (bool)r[10];
+                ApplicationClass app = new ApplicationClass(applicationName, path, parameter, remoteBool, tCPListener, tCPSender, tCPFile, uDPListener,  uDPSender, usedBool, isVideo, this);
                 myApps.Add(app);
                 if (app.usedBool == true)
                 {
