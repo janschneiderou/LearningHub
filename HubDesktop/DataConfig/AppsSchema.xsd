@@ -10,7 +10,8 @@
             <xs:sequence>
               <xs:element name="Name" type="xs:string"></xs:element>
               <xs:element name="Path" type="xs:string"></xs:element>
-              <xs:element name="Parameter" type="xs:string"></xs:element>              
+              <xs:element name="OneExecutable" type="xs:boolean"></xs:element>             
+              <xs:element name="Parameter" type="xs:string" default =""></xs:element>              
               <xs:element name="Remote" type="xs:boolean"></xs:element>
               <xs:element name="TCPListener" type="xs:int"></xs:element>
               <xs:element name="TCPSender" type="xs:int"></xs:element>
@@ -19,7 +20,7 @@
               <xs:element name="UDPSender" type="xs:int"></xs:element>
               <xs:element name="Used" type="xs:boolean"></xs:element>
               <xs:element name="VideoAudio" type="xs:boolean"></xs:element>
-              <xs:element name="xAPIUri" type="xs:string"></xs:element>
+              <xs:element name="xAPIUri" type="xs:string" default =""></xs:element>
             </xs:sequence>
           </xs:complexType>
         </xs:element>

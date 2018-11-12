@@ -10,10 +10,10 @@
         <Grid Name="appsGrid" Margin="20,20,20,150" ShowGridLines="True">
 
         </Grid>
-        <Button Name="buttonStartRecording" Content="Start Recording" HorizontalAlignment="Left" Margin="10,256,0,0" VerticalAlignment="Top" Width="103" Height="34" Click="buttonStartRecording_Click"/>
-        <Button Name="buttonStopRecording" IsEnabled="False" Content="Stop Recording" HorizontalAlignment="Left" Margin="118,256,0,0" VerticalAlignment="Top" Width="100" Height="34" Click="buttonStopRecording_Click"/>
+        <Button Name="buttonStartRecording" Content="Start Recording" HorizontalAlignment="Left" Margin="10,256,0,0" Width="103" Height="34" Click="buttonStartRecording_Click"/>
+        <Button Name="buttonStopRecording" IsEnabled="False" Content="Stop Recording" HorizontalAlignment="Left" Margin="118,256,0,0" Width="100" Height="34" Click="buttonStopRecording_Click"/>
         <Button  Name="buttonFinish" Visibility="Collapsed" Click="buttonFinish_Click" Content="Finish" HorizontalAlignment="Left" Margin="223,256,0,0" VerticalAlignment="Top" Width="75" Height="34"/>
-        <Label Name="LabelFeedback" Content="Feedback" HorizontalAlignment="Left" Margin="320,185,-52.5,-37" VerticalAlignment="Top" Height="152" Width="271"/>
-        <Label Name="statusLabel" Content="wating to start recording" HorizontalAlignment="Left" Margin="72,218,0,0" VerticalAlignment="Top" Height="33" Width="146"/>
+        <Label Name="LabelFeedback" Content="Feedback" HorizontalAlignment="Right" Margin="320,185,-52.5,-37" Height="152" Width="271"/>
+        <Label Name="statusLabel" Content="wating to start recording" HorizontalAlignment="Left" Margin="10,195,0,0" Height="33" Width="146"/>
     </Grid>
 </UserControl>

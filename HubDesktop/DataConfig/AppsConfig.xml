@@ -3,6 +3,7 @@
   <Application>
     <Name>PresentationTrainer</Name>
     <Path>C:\Users\jan\source\repos\PT2016\PresentationTrainer\bin\x64\Release\PresentationTrainer.exe</Path>
+    <OneExecutable>false</OneExecutable>
     <Parameter></Parameter>
     <Remote>false</Remote>
     <TCPListener>11001</TCPListener>
@@ -12,11 +13,12 @@
     <UDPSender>25001</UDPSender>
     <Used>false</Used>
     <VideoAudio>false</VideoAudio>
-    <xAPIUri>blank</xAPIUri>
+    <xAPIUri></xAPIUri>
   </Application>
   <Application>
     <Name>ScreenCaptureForm</Name>
     <Path>C:\Users\jan\source\repos\ScreenCaptureForm\ScreenCaptureForm\bin\Debug\ScreenCaptureForm.exe</Path>
+    <OneExecutable>false</OneExecutable>
     <Parameter></Parameter>
     <Remote>false</Remote>
     <TCPListener>11002</TCPListener>
@@ -26,11 +28,12 @@
     <UDPSender>25002</UDPSender>
     <Used>false</Used>
     <VideoAudio>true</VideoAudio>
-    <xAPIUri>blank</xAPIUri>
+    <xAPIUri></xAPIUri>
   </Application>
   <Application>
     <Name>MyoTest</Name>
     <Path>C:\Users\jan\source\repos\MyoTest\MyoTest\MyoTest\bin\Debug\MyoTest.exe</Path>
+    <OneExecutable>false</OneExecutable>
     <Parameter></Parameter>
     <Remote>false</Remote>
     <TCPListener>11004</TCPListener>
@@ -40,11 +43,12 @@
     <UDPSender>25004</UDPSender>
     <Used>false</Used>
     <VideoAudio>false</VideoAudio>
-    <xAPIUri>blank</xAPIUri>
+    <xAPIUri></xAPIUri>
   </Application>
   <Application>
     <Name>LeapExample</Name>
     <Path>C:\Users\jan\source\repos\LeapExample\LeapExample\bin\Debug\LeapExample.exe</Path>
+    <OneExecutable>false</OneExecutable>
     <Parameter></Parameter>
     <Remote>false</Remote>
     <TCPListener>11005</TCPListener>
@@ -54,11 +58,12 @@
     <UDPSender>25005</UDPSender>
     <Used>false</Used>
     <VideoAudio>false</VideoAudio>
-    <xAPIUri>blank</xAPIUri>
+    <xAPIUri></xAPIUri>
   </Application>
   <Application>
     <Name>KinectReader</Name>
     <Path>C:\Users\jan\source\repos\KinectReader\KinectReader\bin\Debug\KinectReader.exe</Path>
+    <OneExecutable>false</OneExecutable>
     <Parameter></Parameter>
     <Remote>false</Remote>
     <TCPListener>11006</TCPListener>
@@ -68,11 +73,12 @@
     <UDPSender>25006</UDPSender>
     <Used>false</Used>
     <VideoAudio>false</VideoAudio>
-    <xAPIUri>blank</xAPIUri>
+    <xAPIUri></xAPIUri>
   </Application>
   <Application>
     <Name>PTSimulation</Name>
     <Path>C:\Users\jan\source\repos\PTSimulation\PTSimulation\bin\Debug\PTSimulation.exe</Path>
+    <OneExecutable>false</OneExecutable>
     <Parameter></Parameter>
     <Remote>false</Remote>
     <TCPListener>11007</TCPListener>
@@ -82,11 +88,12 @@
     <UDPSender>25007</UDPSender>
     <Used>false</Used>
     <VideoAudio>false</VideoAudio>
-    <xAPIUri>blank</xAPIUri>
+    <xAPIUri></xAPIUri>
   </Application>
   <Application>
     <Name>WebcamCapture</Name>
     <Path>C:\Users\jan\source\repos\WebcamCapture\WebcamCapture\bin\Debug\WebcamCapture.exe</Path>
+    <OneExecutable>false</OneExecutable>
     <Parameter></Parameter>
     <Remote>false</Remote>
     <TCPListener>11008</TCPListener>
@@ -96,11 +103,12 @@
     <UDPSender>25008</UDPSender>
     <Used>false</Used>
     <VideoAudio>true</VideoAudio>
-    <xAPIUri>blank</xAPIUri>
+    <xAPIUri></xAPIUri>
   </Application>
   <Application>
     <Name>ConnectionTestUW</Name>
     <Path>127.0.0.1</Path>
+    <OneExecutable>false</OneExecutable>
     <Parameter></Parameter>
     <Remote>false</Remote>
     <TCPListener>11009</TCPListener>
@@ -110,11 +118,12 @@
     <UDPSender>25009</UDPSender>
     <Used>false</Used>
     <VideoAudio>false</VideoAudio>
-    <xAPIUri>blank</xAPIUri>
+    <xAPIUri></xAPIUri>
   </Application>
   <Application>
     <Name>MQTTDataProvider</Name>
     <Path>C:\Users\Jordi Hutjens\Documents\GitHub\MQTTDataProvider\bin\Debug\MQTTDataProvider</Path>
+    <OneExecutable>false</OneExecutable>
     <Parameter></Parameter>
     <Remote>false</Remote>
     <TCPListener>11010</TCPListener>
@@ -124,6 +133,6 @@
     <UDPSender>25010</UDPSender>
     <Used>true</Used>
     <VideoAudio>false</VideoAudio>
-    <xAPIUri>blank</xAPIUri>
+    <xAPIUri></xAPIUri>
   </Application>
 </Applications>

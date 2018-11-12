@@ -43,7 +43,7 @@ namespace HubDesktop
 
         string currentFileName;
         private UdpClient receivingUdp;
-        
+
 
         private TcpListener myTCPListener;
         private Thread tcpListenerThread;
@@ -62,8 +62,9 @@ namespace HubDesktop
         private TcpClient tcpClientSocket;
         int listeningPort;
         public string Path { get; set; }
+        public bool OneExecutableBool { get; set; }
         public bool remoteBool { get; set; }
-        public string Parameter { get; set; } = "blank";
+        public string Parameter { get; set; }
         public int TCPListenerPort { get; set; }
         public int TCPSenderPort { get; set; }
         public int TCPFile { get; set; }
@@ -72,23 +73,25 @@ namespace HubDesktop
         public bool usedBool { get; set; }
         public bool isVideo { get; set; }
         public string Name { get; set; }
+        public string OneExeName { get; set; }
         string currentUDPString { get; set; }
         string recordingID;
-      
+        private int oneExeInt;
 
         MainWindow Parent;
         public bool isREady = false;
         private Process process;
 
         #region initialization
-        public ApplicationClass(string applicationName, string filePath, string parameter,
-            bool remoteBool, int TCPListener, int TCPSender, int tCPFile,  int UDPListener, 
-            int UDPSender, bool usedBool, bool isVideo,  MainWindow Parent)
+        public ApplicationClass(string applicationName, string filePath, bool oneExecutableBool, string parameter,
+            bool remoteBool, int TCPListener, int TCPSender, int tCPFile, int UDPListener,
+            int UDPSender, bool usedBool, bool isVideo, MainWindow Parent)
         {
-            
+
             this.Path = filePath;
             this.Name = applicationName;
             this.Parent = Parent;
+            this.OneExecutableBool = oneExecutableBool;
             this.Parameter = parameter;
             this.remoteBool = remoteBool;
             this.TCPListenerPort = TCPListener;
@@ -98,7 +101,7 @@ namespace HubDesktop
             this.UDPSenderPort = UDPSender;
             this.usedBool = usedBool;
             this.isVideo = isVideo;
-            
+
             createSockets();
             //receivingUdp = new UdpClient(this.listeningPort);
         }
@@ -108,7 +111,7 @@ namespace HubDesktop
             tcpListenerThread = new Thread(new ThreadStart(tcpListenersStart));
             tcpListenerThread.IsBackground = true;
             tcpListenerThread.Start();
-            
+
         }
 
         private void createUDPSockets()
@@ -124,39 +127,39 @@ namespace HubDesktop
 
         #region TCPSendingStuff
 
-       
+
 
         public void sendStartRecording(string recordingID)
         {
             this.recordingID = recordingID;
 
-            
 
-            sendTCPAsync(StartRecording+recordingID+","+Name+endStartRecording);
+
+            sendTCPAsync(StartRecording + recordingID + "," + Name + endStartRecording);
         }
 
-        
+
 
         public void sendStopRecording()
         {
-           // Thread tcpFileThread;
+            // Thread tcpFileThread;
             uploadReady = false;
             if (Directory.Exists(MainWindow.workingDirectory + "\\" + recordingID))
             {
-                
+
             }
             else
             {
                 DirectoryInfo di = Directory.CreateDirectory(MainWindow.workingDirectory + "\\" + recordingID);
 
             }
-            if(isVideo==false)
+            if (isVideo == false)
             {
                 currentFileName = MainWindow.workingDirectory + "\\" + recordingID + "\\" + recordingID + Name + ".json";
                 tcpFileThread = new Thread(new ThreadStart(ReceiveFileTCP));
                 tcpFileThread.Start();
             }
-            
+
             sendTCPAsync(StopRecording);
         }
 
@@ -213,11 +216,11 @@ namespace HubDesktop
             {
 
             }
-            
 
 
 
-            while (IamRunning==true)
+
+            while (IamRunning == true)
             {
                 try
                 {
@@ -237,9 +240,9 @@ namespace HubDesktop
                     {
 
                         isREady = true;
-                        for(int i=0;i<Parent.myEnabledApps.Count;i++)
+                        for (int i = 0; i < Parent.myEnabledApps.Count; i++)
                         {
-                            if(Parent.myEnabledApps[i].Name == this.Name)
+                            if (Parent.myEnabledApps[i].Name == this.Name)
                             {
                                 Parent.myEnabledApps[i].isREady = isREady;
                                 break;
@@ -252,18 +255,18 @@ namespace HubDesktop
                         handleSendFileMessage(receivedString);
                     }
                     s.Close();
-                  //  client.Close();
+                    //  client.Close();
                 }
                 catch
                 {
 
                 }
-               
+
 
             }
             myTCPListener.Stop();
-           
-           // myTCPListener.clo
+
+            // myTCPListener.clo
         }
 
         private void handleSendFileMessage(string receivedString)
@@ -277,7 +280,7 @@ namespace HubDesktop
             int length = startIndex2 - startIndex;
             string filename = receivedString.Substring(startIndex, length - 1);
 
-            if(recordingID==null)
+            if (recordingID == null)
             {
                 for (int i = 0; i < Parent.myEnabledApps.Count; i++)
                 {
@@ -304,7 +307,7 @@ namespace HubDesktop
 
             try
             {
-                if(tcpFileThread != null)
+                if (tcpFileThread != null)
                 {
                     tcpFileThread.Abort();
                 }
@@ -317,7 +320,7 @@ namespace HubDesktop
             tcpFileThread = new Thread(new ThreadStart(ReceiveFileTCP));
             tcpFileThread.Start();
             sendTCPAsync(receivedString);
-            
+
 
         }
         #endregion
@@ -338,11 +341,11 @@ namespace HubDesktop
         {
             try
             {
-                
+
                 string path = System.IO.Directory.GetCurrentDirectory();
                 try
                 {
-                    if (remoteBool==true)
+                    if (remoteBool == true)
                     {
                         sendTCPAsync(areYouReady);
                         Console.WriteLine("application might be running remotely so thread and listener started");
@@ -350,23 +353,48 @@ namespace HubDesktop
                     }
                     else
                     {
-                        string configfile = Path.Substring(0, Path.LastIndexOf("\\"))+"\\portConfig.txt";
-                        if (File.Exists(configfile))
+                        if (OneExecutableBool)
                         {
-                            File.Delete(configfile);
+                            string configfile = Path.Substring(0, Path.LastIndexOf("\\")) + "\\portConfig" + OneExeName + ".txt";
+                            if (File.Exists(configfile))
+                            {
+                                File.Delete(configfile);
+                            }
+
+                            // Create a new file with an extra parameter using in distinguising one executable being using multiple times.
+                            using (StreamWriter sw = File.CreateText(configfile))
+                            {
+                                sw.WriteLine(OneExeName);
+                                sw.WriteLine(TCPListenerPort);
+                                sw.WriteLine(TCPSenderPort);
+                                sw.WriteLine(TCPFile);
+                                sw.WriteLine(UDPListenerPort);
+                                sw.WriteLine(UDPSenderPort);
+                                sw.WriteLine("127.0.0.1");
+                            }
+                            Directory.SetCurrentDirectory(Path.Substring(0, Path.LastIndexOf("\\")));
                         }
 
-                        // Create a new file 
-                        using (StreamWriter sw = File.CreateText(configfile))
+                        else
                         {
-                            sw.WriteLine(TCPListenerPort);
-                            sw.WriteLine(TCPSenderPort);
-                            sw.WriteLine(TCPFile);
-                            sw.WriteLine(UDPListenerPort);
-                            sw.WriteLine(UDPSenderPort);
-                            sw.WriteLine("127.0.0.1");
+                            string configfile = Path.Substring(0, Path.LastIndexOf("\\")) + "\\portConfig.txt";
+                            if (File.Exists(configfile))
+                            {
+                                File.Delete(configfile);
+                            }
+
+                            // Create a new file 
+                            using (StreamWriter sw = File.CreateText(configfile))
+                            {
+                                sw.WriteLine(TCPListenerPort);
+                                sw.WriteLine(TCPSenderPort);
+                                sw.WriteLine(TCPFile);
+                                sw.WriteLine(UDPListenerPort);
+                                sw.WriteLine(UDPSenderPort);
+                                sw.WriteLine("127.0.0.1");
+                            }
+                            Directory.SetCurrentDirectory(Path.Substring(0, Path.LastIndexOf("\\")));
                         }
-                        Directory.SetCurrentDirectory(Path.Substring(0, Path.LastIndexOf("\\")));
 
                         if (Parameter == "")
                         {
@@ -374,27 +402,24 @@ namespace HubDesktop
                         }
                         else
                         {
-                            Process p= new Process();
+                            Process p = new Process();
                             p.StartInfo.RedirectStandardOutput = true;
                             p.StartInfo.UseShellExecute = false;
                             p.StartInfo.RedirectStandardError = true;
                             p.StartInfo.FileName = Path;
                             p.StartInfo.Arguments = Parameter;
                             p.Start();
-
                         }
-                                                
                         createUDPSockets();
                     }
-
                 }
                 catch
                 {
                     Console.WriteLine("application might be running remotely so thread and listener started");
                 }
                 isRunning = true;
-             //   myRunningThread = new Thread(new ThreadStart(myThreadFunction));
-             //   myRunningThread.Start();
+                //   myRunningThread = new Thread(new ThreadStart(myThreadFunction));
+                //   myRunningThread.Start();
             }
             catch (Exception xx)
             {
@@ -409,6 +434,16 @@ namespace HubDesktop
 
         }
 
+        public void checkStartupPar()
+        {
+            string[] startupPar = Parameter.Split(null);
+            if (startupPar.Any(s => s.Contains("-oen")))
+            {
+                int parIndex = Array.IndexOf(startupPar, "-oen");
+                OneExeName = startupPar[parIndex + 1];
+            }
+        }
+
         private void closeListenerThreads()
         {
             tcpListenerThread.Abort();
@@ -420,8 +455,8 @@ namespace HubDesktop
             close();
             try
             {
-               // myRunningThread.Abort();
-                if (Path.Equals("remoteApp")||remoteBool==true)
+                // myRunningThread.Abort();
+                if (Path.Equals("remoteApp") || remoteBool == true)
                 {
 
                 }
@@ -504,10 +539,10 @@ namespace HubDesktop
             {
                 TcpClient client = null;
                 NetworkStream netstream = null;
-                
+
                 try
                 {
-                    
+
 
                     if (Listener.Pending())
                     {
@@ -525,7 +560,7 @@ namespace HubDesktop
                         }
                         Fs.Close();
 
-                        
+
                         netstream.Close();
                         client.Close();
                         for (int i = 0; i < Parent.myEnabledApps.Count; i++)
@@ -533,11 +568,11 @@ namespace HubDesktop
                             if (Parent.myEnabledApps[i].Name == this.Name)
                             {
                                 uploadReady = true;
-                                Parent.myEnabledApps[i].uploadReady=true;
+                                Parent.myEnabledApps[i].uploadReady = true;
                                 break;
                             }
                         }
-                        
+
 
                     }
                 }

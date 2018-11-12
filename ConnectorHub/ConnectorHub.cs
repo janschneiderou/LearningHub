@@ -53,6 +53,8 @@ namespace ConnectorHub
         public string SendFile = "<SEND FILE>";
         public string endSendFile = "</SEND FILE>";
 
+        private string oneExePar;
+        private string OneExeName { get; set; }
         private int TCPListenerPort { get; set; }
         private int TCPSenderPort { get; set; }
         private int TCPFilePort { get; set; }
@@ -77,53 +79,79 @@ namespace ConnectorHub
 
         private bool IamRunning = true;
 
+        string test;
+
         public void init()
         {
-           
-            string path = System.IO.Directory.GetCurrentDirectory();
+            bool oenBool = false;
+            string[] startupPar = Environment.GetCommandLineArgs();
             valuesNameDefinition = new List<string>();
             frames = new List<FrameObject>();
-            Path.Combine(path, "portConfig.txt");
-            string fileName = Path.Combine(path, "portConfig.txt");
-            
-            
 
-            try
+            if (startupPar.Any(s => s.Contains("-oen")))
             {
-                string[] text = File.ReadAllLines(fileName);
+                try
+                {
+                    checkStartupPar(startupPar);
+                    oenBool = true;
+                    readPortConfig(oenBool);
+                    createSockets();
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("error opening portConfig.txt file");
+                    Console.WriteLine(e.ToString());
+                }
+            }
+            else
+            {
+                try
+                {
+                    readPortConfig(oenBool);
+                    createSockets();
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("error opening portConfig.txt file");
+                    Console.WriteLine(e.ToString());
+                }
+            }
+        }
+
+        private void readPortConfig(bool oenBool)
+        {
+            string path = System.IO.Directory.GetCurrentDirectory();
+            string fileName;
+            string[] text;
+            if (oenBool)
+            {               
+                fileName = Path.Combine(path, "portConfig" + oneExePar + ".txt");
+                text = File.ReadAllLines(fileName);
+                OneExeName = text[0].ToString();
+                TCPSenderPort = Int32.Parse(text[1]);
+                TCPListenerPort = Int32.Parse(text[2]);
+                TCPFilePort = Int32.Parse(text[3]);
+                UDPSenderPort = Int32.Parse(text[4]);
+                UDPListenerPort = Int32.Parse(text[5]);
+                HupIPAddress = text[6];
+            }
+            else
+            {
+                fileName = Path.Combine(path, "portConfig.txt");
+                text = File.ReadAllLines(fileName);
                 TCPSenderPort = Int32.Parse(text[0]);
                 TCPListenerPort = Int32.Parse(text[1]);
                 TCPFilePort = Int32.Parse(text[2]);
                 UDPSenderPort = Int32.Parse(text[3]);
                 UDPListenerPort = Int32.Parse(text[4]);
                 HupIPAddress = text[5];
-
-                createSockets();
             }
-            catch (Exception e)
-            {
-                try
-                {
+        }
 
-                    
-
-                    string[] text = File.ReadAllLines("portConfig");
-                    TCPSenderPort = Int32.Parse(text[0]);
-                    TCPListenerPort = Int32.Parse(text[1]);
-                    TCPFilePort = Int32.Parse(text[2]);
-                    UDPSenderPort = Int32.Parse(text[3]);
-                    UDPListenerPort = Int32.Parse(text[4]);
-                    HupIPAddress = text[5];
-
-                    createSockets();
-                }
-                catch (Exception et)
-                {
-                    Console.WriteLine("error opening portConfig.txt file");
-                }
-                Console.WriteLine("error opening portConfig.txt file");
-            }
-            
+        private void checkStartupPar(string [] startupPar)
+        {
+            int parIndex = Array.IndexOf(startupPar, "-oen");
+            oneExePar = startupPar[parIndex + 1];
         }
 
         private void createSockets()

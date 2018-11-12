@@ -322,16 +322,17 @@ namespace HubDesktop
             {
                 string applicationName = (string)r[0];
                 string path = (string)r[1];
-                string parameter = (string)r[2];
-                bool remoteBool = (bool)r[3];
-                int tCPListener = (int)r[4];
-                int tCPSender = (int)r[5];
-                int tCPFile = (int)r[6];
-                int uDPListener = (int)r[7];
-                int uDPSender = (int)r[8];
-                bool usedBool = (bool)r[9];
-                bool isVideo = (bool)r[10];
-                ApplicationClass app = new ApplicationClass(applicationName, path, parameter, remoteBool, tCPListener, tCPSender, tCPFile, uDPListener,  uDPSender, usedBool, isVideo, this);
+                bool oneExecutableBool = (bool)r[2];
+                string parameter = (string)r[3];
+                bool remoteBool = (bool)r[4];
+                int tCPListener = (int)r[5];
+                int tCPSender = (int)r[6];
+                int tCPFile = (int)r[7];
+                int uDPListener = (int)r[8];
+                int uDPSender = (int)r[9];
+                bool usedBool = (bool)r[10];
+                bool isVideo = (bool)r[11];
+                ApplicationClass app = new ApplicationClass(applicationName, path, oneExecutableBool, parameter, remoteBool, tCPListener, tCPSender, tCPFile, uDPListener,  uDPSender, usedBool, isVideo, this);
                 myApps.Add(app);
                 if (app.usedBool == true)
                 {
@@ -353,6 +354,14 @@ namespace HubDesktop
                 string path = (string)r[1];
                 LAApplication LAApp = new LAApplication(name, path);
                 myLAApps.Add(LAApp);
+            }
+        }
+
+        private void initializeStartupPar()
+        {
+            foreach (ApplicationClass app in myEnabledApps)
+            {
+                app.checkStartupPar();
             }
         }
 
@@ -418,43 +427,34 @@ namespace HubDesktop
             saveLAApplications();
             SaveFeedbackApplications();
             addApplicationsToLists();
+            initializeStartupPar();
             myRecordingInterface = new Recording(this);
             MainCanvas.Children.Add(myRecordingInterface);
             myState = States.recordingReady;
             initializeApplications();
-
         }
 
         private void LAButtonSave_Click(object sender, RoutedEventArgs e)
         {
             saveLAApplications();
-        }
-
-        
+        }     
 
         private void LAButtonDelete_Click(object sender, RoutedEventArgs e)
         {
             deleteAApplications();
             
-        }
-
-        
+        }      
 
         private void FeedbackButtonSave_Click(object sender, RoutedEventArgs e)
         {
             SaveFeedbackApplications();
         }
-
       
         private void FeedbackButtonDelete_Click(object sender, RoutedEventArgs e)
         {
             DeleteFeedbackApplications();
             
         }
-
-
-
-
 
         #endregion
 

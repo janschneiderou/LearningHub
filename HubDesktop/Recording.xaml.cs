@@ -93,19 +93,25 @@ namespace HubDesktop
             appsGrid.ColumnDefinitions.Add(gridColApps);
             appsGrid.ColumnDefinitions.Add(gridColReady);
 
-            RowDefinition gridRowHeader = new RowDefinition();
-            gridRowHeader.Height = new GridLength(45);
+            RowDefinition gridRowHeader = new RowDefinition
+            {
+                Height = new GridLength(45)
+            };
             appsGrid.RowDefinitions.Add(gridRowHeader);
-            Label headerApp = new Label();
-            headerApp.FontStyle = FontStyles.Oblique;
-            headerApp.Content = "Application Name";
+            Label headerApp = new Label
+            {
+                FontStyle = FontStyles.Oblique,
+                Content = "Application Name "
+            };
             Grid.SetRow(headerApp, 0);
             Grid.SetColumn(headerApp, 0);
             appsGrid.Children.Add(headerApp);
 
-            Label headerReady = new Label();
-            headerReady.FontStyle = FontStyles.Oblique;
-            headerReady.Content = "Is Ready?";
+            Label headerReady = new Label
+            {
+                FontStyle = FontStyles.Oblique,
+                Content = "Is Ready?"
+            };
             Grid.SetRow(headerReady, 0);
             Grid.SetColumn(headerReady, 1);
             appsGrid.Children.Add(headerReady);
@@ -113,19 +119,37 @@ namespace HubDesktop
             int i = 1;
             foreach (ApplicationClass app in parent.myEnabledApps)
             {
-                RowDefinition gridRow = new RowDefinition();
-                gridRow.Height = new GridLength(45);
+                RowDefinition gridRow = new RowDefinition
+                {
+                    Height = new GridLength(45)
+                };
                 appsGrid.RowDefinitions.Add(gridRow);
 
-                Label lApps = new Label();
-                lApps.Content = app.Name;
+                if (app.OneExeName == null)
+                {
+                    Label lApps = new Label
+                    {
+                        Content = app.Name 
+                    };
+                    Grid.SetRow(lApps, i);
+                    Grid.SetColumn(lApps, 0);
+                    appsGrid.Children.Add(lApps);
+                }
+                else
+                {
+                    Label lApps = new Label
+                    {
+                        Content = app.Name + " " + app.OneExeName
+                    };
+                    Grid.SetRow(lApps, i);
+                    Grid.SetColumn(lApps, 0);
+                    appsGrid.Children.Add(lApps);
+                }
 
-                Grid.SetRow(lApps, i);
-                Grid.SetColumn(lApps, 0);
-                appsGrid.Children.Add(lApps);
-
-                Label lReady = new Label();
-                lReady.Content = "";
+                Label lReady = new Label
+                {
+                    Content = ""
+                };
 
                 Grid.SetRow(lReady, i);
                 Grid.SetColumn(lReady, 1);
