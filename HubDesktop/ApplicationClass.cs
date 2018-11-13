@@ -429,7 +429,6 @@ namespace HubDesktop
 
         public void close()
         {
-            IamRunning = false;
             myTCPListener.Stop();
 
         }

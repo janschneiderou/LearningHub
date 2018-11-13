@@ -200,7 +200,6 @@ namespace ConnectorHub
                     }
                     else if (receivedstring.Contains(StopRecording))
                     {
-                        
                         doStopStuff();
                     }
                     else if(receivedstring.Contains(SendFile))
