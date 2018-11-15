@@ -71,9 +71,6 @@ namespace HubDesktop
 
         public static string currentUser;
 
-
-
-
         // variables for remote control
         public enum States { menu, recordingReady, isRecording, RecordingStop };
         public static States myState;
@@ -96,7 +93,7 @@ namespace HubDesktop
 
             myFeedbacks = new List<FeedbackApp>();
             myLAApps = new List<LAApplication>();
-            setAppsTable();
+            SetAppsTable();
             Loaded += MainWindow_Loaded;
 
             //System.Diagnostics.Process.Start(@"C:\Users\jan\source\repos\LearningHub\HubDesktop\bin\Debug\restart.bat");
@@ -108,11 +105,11 @@ namespace HubDesktop
         {
             myState = States.menu;
             controlPortNumber = Int32.Parse(controlPort.Text);
-            RemoteControlThread = new Thread(new ThreadStart(remoteControlStart));
+            RemoteControlThread = new Thread(new ThreadStart(RemoteControlStart));
             RemoteControlThread.Start();
         }
 
-        public void startAgain()
+        public void StartAgain()
         {
             MainCanvas.Children.Remove(myRecordingInterface);
             myRecordingInterface = null;
@@ -147,7 +144,7 @@ namespace HubDesktop
         {
             foreach(ApplicationClass app in myEnabledApps)
             {
-                app.closeApp();
+                app.CloseApp();
             }
             myEnabledApps = null;
             IamRunning = false;
@@ -160,7 +157,7 @@ namespace HubDesktop
 
             }
             //base.OnExiting(sender, e);
-            if (restart == true)
+            if (restart )
             {
                 
                // System.Diagnostics.Process.Start(workingDirectory + "\\HubDeskTop.exe"); //Very important line for Debug
@@ -169,7 +166,7 @@ namespace HubDesktop
           
         }
 
-        private void setAppsTable()
+        private void SetAppsTable()
         {
  
             appsDataSet = new DataSet();
@@ -192,7 +189,7 @@ namespace HubDesktop
             FeedbackAppsGrid.ItemsSource = FeedbackAppsDataSet.Tables[0].DefaultView;
         }
 
-        public async Task handleXAPIAsync()
+        public async Task HandleXAPIAsync()
         {
             if(lastFeedbackSent.verb.Contains("Good"))
             {
@@ -227,20 +224,19 @@ namespace HubDesktop
                     }
 
                 }
-                catch (Exception E)
+                catch (Exception e)
                 {
+                    Console.WriteLine(e);
                     Console.WriteLine("error trying to post to server");
                 }
             }
         }
 
-        public async void handleFeedback(string feedback)
+        public async void HandleFeedback(string feedback)
         {
             foreach(FeedbackApp fapp in myFeedbacks)
             {
-                fapp.sendUDP(feedback);
-                
-               
+                fapp.SendUDP(feedback);  
             }
             try
             {
@@ -252,8 +248,6 @@ namespace HubDesktop
                 }
                 else if (feed.verb.Contains("Good"))
                 {
-
-
                     XAPIStuff.XAPIActor actor = new XAPIStuff.XAPIActor("id_" + lastFeedbackSent.applicationName, "application", lastFeedbackSent.applicationName);
                     XAPIStuff.XAPIVerb verb = new XAPIStuff.XAPIVerb("id", lastFeedbackSent.verb);
                     XAPIStuff.XAPIObject myObject = new XAPIStuff.XAPIObject("student", "id_student");
@@ -263,7 +257,6 @@ namespace HubDesktop
                     XAPIStuff.XAPIStatement myStatement = new XAPIStuff.XAPIStatement(actor, verb, myObject, context);
 
                     string xapiString = JsonConvert.SerializeObject(myStatement, Newtonsoft.Json.Formatting.Indented);
-
 
                     try
                     {
@@ -280,8 +273,9 @@ namespace HubDesktop
                         }
 
                     }
-                    catch (Exception E)
+                    catch (Exception e)
                     {
+                        Console.WriteLine(e);
                         Console.WriteLine("error trying to post to server");
                     }
                     lastFeedbackSent = feed;
@@ -311,7 +305,7 @@ namespace HubDesktop
         }
 
         #region startingApps
-        private void addApplicationsToLists()
+        private void AddApplicationsToLists()
         {
             myApps = new List<ApplicationClass>();
             myEnabledApps = new List<ApplicationClass>();
@@ -334,7 +328,7 @@ namespace HubDesktop
                 bool isVideo = (bool)r[11];
                 ApplicationClass app = new ApplicationClass(applicationName, path, oneExecutableBool, parameter, remoteBool, tCPListener, tCPSender, tCPFile, uDPListener,  uDPSender, usedBool, isVideo, this);
                 myApps.Add(app);
-                if (app.usedBool == true)
+                if (app.UsedBool)
                 {
                     myEnabledApps.Add(app);
                 }
@@ -357,48 +351,85 @@ namespace HubDesktop
             }
         }
 
-        private void initializeStartupPar()
+        private void InitializeStartupPar()
         {
             foreach (ApplicationClass app in myEnabledApps)
             {
-                app.checkStartupPar();
+                app.CheckStartupPar();
             }
         }
 
-        private void initializeApplications()
+        private void InitializeApplications()
         {
             foreach(ApplicationClass app in myEnabledApps)
             {
-                app.startApp();
+                app.StartApp();
             }
         }
         #endregion
 
-        #region saveDeleteApps
-        private void saveApplications()
+        #region saveDeleteCopyApps
+        private void SaveApplications()
         {
            // appsDataSet.Tables[0].WriteXml(Directory.GetCurrentDirectory() + "\\DataConfig\\AppsConfig.xml");
             appsDataSet.Tables[0].WriteXml(workingDirectory + "\\DataConfig\\AppsConfig.xml");
         }
 
-        private void deleteApplications()
+        private void DeleteApplications()
         {
-            appsDataSet.Tables[0].Rows[AppsGrid.SelectedIndex].Delete();
+            try
+            {
+                if (AppsGrid.SelectedIndex  != -1)
+                {
+                    appsDataSet.Tables[0].Rows[AppsGrid.SelectedIndex].Delete();
+                }
+            }
+            catch(IndexOutOfRangeException e)
+            {
+                Console.WriteLine(e);
+            }
         }
-        private void saveLAApplications()
+
+        private void CopyApplications()
+        {
+            try
+            {
+                if (AppsGrid.SelectedIndex != -1)
+                {
+                    
+                    var row = appsDataSet.Tables[0].Rows[AppsGrid.SelectedIndex];
+                    appsDataSet.Tables[0].ImportRow(row);
+                    for (int i = 5; i < 10; i++)
+                    {
+                        int x = Convert.ToInt32(appsDataSet.Tables[0].Rows[AppsGrid.SelectedIndex][i]);
+                        appsDataSet.Tables[0].Rows[appsDataSet.Tables[0].Rows.Count - 1][i] = x + 1;
+                    }
+                }
+            }
+            catch (IndexOutOfRangeException e)
+            {
+                Console.WriteLine(e);
+            }
+        }
+
+
+        private void SaveLAApplications()
         {
            // LAAppsDataSet.Tables[0].WriteXml(Directory.GetCurrentDirectory() + "\\DataConfig\\LAConfig.xml");
             LAAppsDataSet.Tables[0].WriteXml(workingDirectory + "\\DataConfig\\LAConfig.xml");
         }
-        private void deleteAApplications()
+
+        private void DeleteAApplications()
         {
             LAAppsDataSet.Tables[0].Rows[LAAppsGrid.SelectedIndex].Delete();
         }
+
         private void SaveFeedbackApplications()
         {
             //FeedbackAppsDataSet.Tables[0].WriteXml(Directory.GetCurrentDirectory() + "\\DataConfig\\FeedbackConfig.xml");
             FeedbackAppsDataSet.Tables[0].WriteXml(workingDirectory + "\\DataConfig\\FeedbackConfig.xml");
         }
+
         private void DeleteFeedbackApplications()
         {
             FeedbackAppsDataSet.Tables[0].Rows[FeedbackAppsGrid.SelectedIndex].Delete();
@@ -409,40 +440,42 @@ namespace HubDesktop
         #region interactionsClicks
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-
-            saveApplications();
+            SaveApplications();
         }
 
         private void DeleteButton_Click(object sender, RoutedEventArgs e)
         {
-            deleteApplications();
-                
+            DeleteApplications();        
         }
-        
+
+        private void CopyButton_Click(object sender, RoutedEventArgs e)
+        {
+            CopyApplications();
+        }
+
         private void StartApplications_Click(object sender, RoutedEventArgs e)
         {
            // System.Diagnostics.Process.Start(@"C:\Users\jan\source\repos\LearningHub\HubDesktop\bin\Debug\restart.bat");
 
-            saveApplications();
-            saveLAApplications();
+            SaveApplications();
+            SaveLAApplications();
             SaveFeedbackApplications();
-            addApplicationsToLists();
-            initializeStartupPar();
+            AddApplicationsToLists();
+            InitializeStartupPar();
             myRecordingInterface = new Recording(this);
             MainCanvas.Children.Add(myRecordingInterface);
             myState = States.recordingReady;
-            initializeApplications();
+            InitializeApplications();
         }
 
         private void LAButtonSave_Click(object sender, RoutedEventArgs e)
         {
-            saveLAApplications();
+            SaveLAApplications();
         }     
 
         private void LAButtonDelete_Click(object sender, RoutedEventArgs e)
         {
-            deleteAApplications();
-            
+            DeleteAApplications();
         }      
 
         private void FeedbackButtonSave_Click(object sender, RoutedEventArgs e)
@@ -452,8 +485,7 @@ namespace HubDesktop
       
         private void FeedbackButtonDelete_Click(object sender, RoutedEventArgs e)
         {
-            DeleteFeedbackApplications();
-            
+            DeleteFeedbackApplications();        
         }
 
         #endregion
@@ -471,7 +503,7 @@ namespace HubDesktop
         }
 
 
-        private void remoteControlStart()
+        private void RemoteControlStart()
         {
             try
             {
@@ -483,7 +515,7 @@ namespace HubDesktop
             }
             myRemoteControlTCPListener = new TcpListener(IPAddress.Any, controlPortNumber);
             myRemoteControlTCPListener.Start();
-            while (IamRunning == true)
+            while (IamRunning )
             {
                 Console.WriteLine("The server is running at port 12001...");
                 Console.WriteLine("The local End point is  :" +
@@ -515,17 +547,17 @@ namespace HubDesktop
                         {
                             Dispatcher.Invoke(() =>
                             {
-                                myRecordingInterface.startRecording();
+                                myRecordingInterface.StartRecording();
                             });
                         }
                         break;
                     case States.isRecording:
                         if(receivedString.Contains(stopRecording))
                         {
-                            sendFileName(s);
+                            SendFileName(s);
                             Dispatcher.Invoke(() =>
                             {
-                                myRecordingInterface.buttonStopRecording_Click(null, null);
+                                myRecordingInterface.ButtonStopRecording_Click(null, null);
                             });
                         }
                         break;
@@ -534,7 +566,7 @@ namespace HubDesktop
                         {
                             Dispatcher.Invoke(() =>
                             {
-                                myRecordingInterface.buttonFinish_Click(null, null);
+                                myRecordingInterface.ButtonFinish_Click(null, null);
                             });
                         }
                         break;
@@ -543,7 +575,7 @@ namespace HubDesktop
             myRemoteControlTCPListener.Stop();
         }
 
-        private void sendFileName(Socket s)
+        private void SendFileName(Socket s)
         {
             string stringToSend = myRecordingInterface.recordingID +".zip";
             //TODO send this string to the remoteEndPoint

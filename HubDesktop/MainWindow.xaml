@@ -16,6 +16,7 @@
         <Button Name="SaveButton" Content="Save" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Click="SaveButton_Click" Canvas.Left="1200" Canvas.Top="45"/>
         <Button Name="DeleteButton" Content="Delete" HorizontalAlignment="Left" VerticalAlignment="Top" Width="76" RenderTransformOrigin="3.059,0.65" Click="DeleteButton_Click" Canvas.Left="1200" Canvas.Top="100"/>
         <Button Name="StartApplications" Content="Start Applications" HorizontalAlignment="Left" VerticalAlignment="Top" Width="116" Height="39" Canvas.Left="10" Canvas.Top="587" Click="StartApplications_Click"/>
+        <Button x:Name="CopyButton" Content="Copy" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Click="CopyButton_Click" Canvas.Left="1200" Canvas.Top="72"/>
         <Label Content="Recording Applications" Canvas.Left="314" Canvas.Top="19"/>
         <DataGrid Name="LAAppsGrid" Height="159" Canvas.Left="10" Canvas.Top="349" Width="492"/>
         <Label Content="Learning Analytics url" Canvas.Left="162" Canvas.Top="318"/>

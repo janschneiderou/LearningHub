@@ -18,22 +18,11 @@
  * Contributors: Jan Schneider
  * ****************************************************************************
  */
-using ConnectorHub;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace HubDesktop
 {
@@ -42,14 +31,13 @@ namespace HubDesktop
     /// </summary>
     public partial class Recording : UserControl
     {
-        List<Label> labelApps;
-        List<Label> labelReady;
-        MainWindow parent;
-
-        bool recordingStarted = false;
-        bool everythingReady = false;
-        Thread threadWaitingForReady;
-        Thread waitingForUpload;
+        private List<Label> labelApps;
+        private List<Label> labelReady;
+        private MainWindow parent;
+        private bool recordingStarted = false;
+        private bool everythingReady = false;
+        private Thread threadWaitingForReady;
+        private Thread waitingForUpload;
         public string recordingID;
         public bool isOpen = true;
 
@@ -61,29 +49,29 @@ namespace HubDesktop
             InitializeInterface();
             InitializeControl();
 
-            
+
         }
 
         private void InitializeControl()
         {
-            threadWaitingForReady = new Thread(new ThreadStart(tcpListenersStart));
+            threadWaitingForReady = new Thread(new ThreadStart(TcpListenersStart));
             threadWaitingForReady.Start();
         }
 
-        private void tcpListenersStart()
+        private void TcpListenersStart()
         {
-            while(recordingStarted==false && everythingReady == false && isOpen==true)
+            while (recordingStarted == false && everythingReady == false && isOpen )
             {
-                setLabelReadyContent();
+                SetLabelReadyContent();
                 Thread.Sleep(1000);
             }
         }
 
         private void InitializeInterface()
         {
-            this.Height = parent.Height;
-            this.Width = parent.Width;
-            
+            Height = parent.Height;
+            Width = parent.Width;
+
             labelApps = new List<Label>();
             labelReady = new List<Label>();
 
@@ -129,7 +117,7 @@ namespace HubDesktop
                 {
                     Label lApps = new Label
                     {
-                        Content = app.Name 
+                        Content = app.Name
                     };
                     Grid.SetRow(lApps, i);
                     Grid.SetColumn(lApps, 0);
@@ -162,19 +150,19 @@ namespace HubDesktop
         #endregion
 
 
-        private void setLabelReadyContent()
+        private void SetLabelReadyContent()
         {
             int i = 0;
             int readyApps = 0;
-            foreach(ApplicationClass apps in parent.myEnabledApps )
+            foreach (ApplicationClass apps in parent.myEnabledApps)
             {
-                if(apps.isREady==true)
+                if (apps.isReady )
                 {
                     Dispatcher.Invoke(() =>
                     {
                         labelReady[i].Content = "Yes";
                     });
-           
+
                     readyApps++;
                 }
                 else
@@ -186,71 +174,70 @@ namespace HubDesktop
                 }
                 i++;
             }
-            if(parent.myEnabledApps != null)
+            if (parent.myEnabledApps != null)
             {
                 if (readyApps == parent.myEnabledApps.Count)
                 {
                     everythingReady = true;
                 }
             }
-            
+
         }
 
-        private void buttonStartRecording_Click(object sender, RoutedEventArgs e)
+        private void ButtonStartRecording_Click(object sender, RoutedEventArgs e)
         {
-            startRecording();
-            
+            StartRecording();
         }
 
-        public void startRecording()
+        public void StartRecording()
         {
             statusLabel.Content = "recording";
-            recordingID = DateTime.Now.Year.ToString() + "-" +DateTime.Now.Month.ToString()+"-"+DateTime.Now.Day+"-";
+            recordingID = DateTime.Now.Year.ToString() + "-" + DateTime.Now.Month.ToString() + "-" + DateTime.Now.Day + "-";
             recordingID = recordingID + DateTime.Now.Hour.ToString();
             recordingID = recordingID + "H" + DateTime.Now.Minute.ToString() + "M" + DateTime.Now.Second.ToString() + "S" + DateTime.Now.Millisecond.ToString();
-            
+
             foreach (ApplicationClass apps in parent.myEnabledApps)
             {
-                apps.sendStartRecording(recordingID);
-                apps.IamRunning = true;
+                apps.SendStartRecording(recordingID);
+                apps.iAmRunning = true;
             }
             buttonStartRecording.IsEnabled = false;
             buttonStopRecording.IsEnabled = true;
             MainWindow.myState = MainWindow.States.isRecording;
         }
 
-        public void buttonStopRecording_Click(object sender, RoutedEventArgs e)
+        public void ButtonStopRecording_Click(object sender, RoutedEventArgs e)
         {
             foreach (ApplicationClass apps in parent.myEnabledApps)
             {
-                apps.sendStopRecording();
-                apps.IamRunning = false;
+                apps.SendStopRecording();
+                apps.iAmRunning = false;
             }
 
 
-            parent.handleXAPIAsync();
+            parent.HandleXAPIAsync();
             buttonStartRecording.IsEnabled = false;
             buttonStopRecording.IsEnabled = false;
             MainWindow.myState = MainWindow.States.RecordingStop;
-            waitingForUpload = new Thread(new ThreadStart(uploadListener));
+            waitingForUpload = new Thread(new ThreadStart(UploadListener));
             waitingForUpload.Start();
             statusLabel.Content = "Retrieving recordings";
         }
 
-        private void uploadListener()
+        private void UploadListener()
         {
             bool waitingForUpload = true;
-            while(waitingForUpload==true)
+            while (waitingForUpload)
             {
                 int i = 0;
                 foreach (ApplicationClass app in parent.myEnabledApps)
                 {
-                    if(app.uploadReady ==true)
+                    if (app.uploadReady )
                     {
                         i++;
                     }
                 }
-                if(i==parent.myEnabledApps.Count)
+                if (i == parent.myEnabledApps.Count)
                 {
                     waitingForUpload = false;
                 }
@@ -260,8 +247,8 @@ namespace HubDesktop
             {
                 //buttonFinish.Visibility = Visibility.Visible;
                 statusLabel.Content = "Uploading files to server";
-                CompressAndUpload ca = new CompressAndUpload(MainWindow.workingDirectory + "\\" + recordingID, recordingID, parent.myEnabledApps );
-                ca.finishedUploadingEvent += Ca_finishedUploadingEvent;
+                CompressAndUpload ca = new CompressAndUpload(MainWindow.workingDirectory + "\\" + recordingID, recordingID, parent.myEnabledApps);
+                ca.FinishedUploadingEvent += Ca_finishedUploadingEvent;
             });
         }
 
@@ -271,18 +258,15 @@ namespace HubDesktop
             statusLabel.Content = "Upload finished";
         }
 
-        public void buttonFinish_Click(object sender, RoutedEventArgs e)
+        public void ButtonFinish_Click(object sender, RoutedEventArgs e)
         {
-            
+
             foreach (ApplicationClass app in parent.myEnabledApps)
             {
-                app.closeApp();
+                app.CloseApp();
             }
-            parent.startAgain();
+            parent.StartAgain();
             MainWindow.myState = MainWindow.States.menu;
-
-            
-
         }
     }
 }

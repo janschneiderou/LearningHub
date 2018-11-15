@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="686.959" Width="971.274" WindowState="Maximized">
     <Grid>
-        <Button Name="buttonOpen" Content="Load" Click="buttonOpen_Click" HorizontalAlignment="Left" Margin="376,16,0,0" VerticalAlignment="Top" Width="75"/>
+        <Button Name="buttonOpen" Content="Load" Click="ButtonOpen_Click" HorizontalAlignment="Left" Margin="376,16,0,0" VerticalAlignment="Top" Width="75"/>
         <TextBox Name="textBoxFile" HorizontalAlignment="Left" Height="20" Margin="10,16,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="305"/>
 
         <ScrollViewer   Margin="10,71,0,310.5" Width="200" HorizontalAlignment="Left">
