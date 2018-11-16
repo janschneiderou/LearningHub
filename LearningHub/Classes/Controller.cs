@@ -98,7 +98,7 @@ namespace LearningHub.Classes
         {
             foreach (ApplicationClass ac in myApps)
             {
-                ac.startApp();
+                ac.StartApp();
             }
         }
         #endregion

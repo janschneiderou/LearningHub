@@ -28,14 +28,15 @@ namespace ConnectorHub
 {
     public class RecordingObject
     {
-        public string recordingID { get; set; }
-        public string applicationName { get; set; }
+        public string RecordingID { get; set; }
+        public string ApplicationName { get; set; }
+        public string OenName { get; set; }
 
-        public List<FrameObject> frames { get; set; }
+        public List<FrameObject> Frames { get; set; }
         
         public RecordingObject()
         {
-            frames = new List<FrameObject>();
+            Frames = new List<FrameObject>();
         }
     }
 }

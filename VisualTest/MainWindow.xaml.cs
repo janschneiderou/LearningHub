@@ -57,7 +57,6 @@ namespace VisualTest
         List<string> attributeNames;
         List<CheckBox> checkBoxAttributes;
         List<string> selectedValues;
-        List<Dictionary<string, string>> selectedDisplayedValues;
         List<SolidColorBrush> colorForValues;
         List<SolidColorBrush> colorForCanvas;
         AttributeList[] AttributeList;
@@ -74,16 +73,11 @@ namespace VisualTest
             recordingObject = new List<RecordingObject>();
             valuesScroll.Width = this.Width;
             attributeNames = new List<string>();
-
-
-
-            
            // System.Diagnostics.Process.Start(@"C:\Users\jan\source\repos\LearningHub\HubDesktop\bin\Debug\restart.bat");
-
         }
 
 
-        private void buttonOpen_Click(object sender, RoutedEventArgs e)
+        private void ButtonOpen_Click(object sender, RoutedEventArgs e)
         {
             buttonShow.IsEnabled = true;
             OpenFileDialog openFileDialog = new OpenFileDialog();
@@ -92,7 +86,7 @@ namespace VisualTest
             RecordingObject r= JsonConvert.DeserializeObject<RecordingObject>(jsonOne);
             recordingObject.Add(r); 
 
-            getAttributeNames();
+            GetAttributeNames();
 
             totalTime = recordingObject[recordingObject.Count-1].frames[recordingObject[recordingObject.Count - 1].frames.Count - 1].frameStamp.TotalMilliseconds;
             textBoxFile.Text = totalTime+"";
@@ -101,7 +95,7 @@ namespace VisualTest
 
         }
 
-        private void getAttributeNames()
+        private void GetAttributeNames()
         {
             checkBoxAttributes = new List<CheckBox>();
             GridAttributesKeys.Children.Clear();
@@ -112,11 +106,15 @@ namespace VisualTest
                 
                 foreach (string s in attributeNames)
                 {
-                    CheckBox c = new CheckBox();
-                    c.Content = s;
+                    CheckBox c = new CheckBox
+                    {
+                        Content = s
+                    };
                     checkBoxAttributes.Add(c);
-                    RowDefinition gridRow = new RowDefinition();
-                    gridRow.Height = new GridLength(30);
+                    RowDefinition gridRow = new RowDefinition
+                    {
+                        Height = new GridLength(30)
+                    };
                     GridAttributesKeys.RowDefinitions.Add(gridRow);
                     Grid.SetRow(c, GridAttributesKeys.RowDefinitions.Count - 1);
                     GridAttributesKeys.Children.Add(c);
@@ -151,14 +149,14 @@ namespace VisualTest
                     colorForValues.Add(sc);                
                 }
             }
-            createAttributeLists();
-            createGridRows();
-            displayValues();
+            CreateAttributeLists();
+            CreateGridRows();
+            DisplayValues();
             ButtonLoadVideo.IsEnabled = true;
             
         }
 
-        private void displayValues()
+        private void DisplayValues()
         {
            frameLength = 1000 / double.Parse(textBoxFrameRate.Text);
             double currentTimeTop = frameLength;
@@ -175,10 +173,12 @@ namespace VisualTest
                         if(AttributeList[j].myTime[k] > currentTimeDown &&
                         AttributeList[j].myTime[k] <= currentTimeTop)
                         {
-                            Ellipse point1 = new Ellipse();
-                            point1.Fill = colorForValues[j];
-                            point1.Height = 5;
-                            point1.Width = 5;
+                            Ellipse point1 = new Ellipse
+                            {
+                                Fill = colorForValues[j],
+                                Height = 5,
+                                Width = 5
+                            };
                             valueCanvas[j].Children.Add(point1);
 
                             double left = i * valuesScroll.Width / totalFrames;
@@ -203,7 +203,7 @@ namespace VisualTest
             }
         }
 
-        private void createAttributeLists()
+        private void CreateAttributeLists()
         {
             AttributeList = new VisualTest.AttributeList[selectedValues.Count];
             int i = 0;
@@ -237,7 +237,7 @@ namespace VisualTest
             }
         }
 
-        private void createGridRows()
+        private void CreateGridRows()
         {
             GridValues.Children.Add(CanvasForValues);
             GridValues.RowDefinitions.Clear();
@@ -245,19 +245,25 @@ namespace VisualTest
             valueCanvas = new List<Canvas>();
             for(int i = 0; i<selectedValues.Count; i++)
             {
-                Canvas c = new Canvas();
-                c.Width = GridValues.Width;
-                c.Height = 100;
-                Label l = new Label();
-                l.Content = selectedValues[i];
-                l.Foreground = colorForValues[i];
+                Canvas c = new Canvas
+                {
+                    Width = GridValues.Width,
+                    Height = 100
+                };
+                Label l = new Label
+                {
+                    Content = selectedValues[i],
+                    Foreground = colorForValues[i]
+                };
                 c.Children.Add(l);
                 Canvas.SetTop(l,topValueSpace * .5);
                 
                 valueCanvas.Add(c);
-                RowDefinition gridRow = new RowDefinition();
-                gridRow.Height = new GridLength(topValueSpace);
-                
+                RowDefinition gridRow = new RowDefinition
+                {
+                    Height = new GridLength(topValueSpace)
+                };
+
                 GridValues.RowDefinitions.Add(gridRow);
                 Grid.SetRow(c, i);
                 Grid.SetColumn(c, 0);
@@ -287,15 +293,17 @@ namespace VisualTest
             VideoControl.Play();
 
             // Create a timer that will update the counters and the time slider
-            DispatcherTimer timerVideoTime = new DispatcherTimer();
-            timerVideoTime.Interval = TimeSpan.FromMilliseconds(frameLength);
-            timerVideoTime.Tick += new EventHandler(timer_Tick);
+            DispatcherTimer timerVideoTime = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromMilliseconds(frameLength)
+            };
+            timerVideoTime.Tick += new EventHandler(Timer_Tick);
             timerVideoTime.Start();
             ButtonStop.IsEnabled = true;
             ButtonPlay.IsEnabled = true;
         }
 
-        private void timer_Tick(object sender, EventArgs e)
+        private void Timer_Tick(object sender, EventArgs e)
         {
             double left = (VideoControl.Position.TotalMilliseconds/frameLength) * (valuesScroll.Width / totalFrames);
             
@@ -333,13 +341,10 @@ namespace VisualTest
                 //VideoControl.Pause();
                 double left = Canvas.GetLeft(myTimelineLine);
                 VideoControl.Position = TimeSpan.FromMilliseconds(left * frameLength * totalFrames / valuesScroll.Width);
-                VideoControl.Pause();
-                int x = 1;
-                    
+                VideoControl.Pause();                  
             }
-            catch(Exception ex)
+            catch(Exception)
             {
-                int z = 1;
             }
         }
     }

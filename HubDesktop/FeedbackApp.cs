@@ -35,7 +35,7 @@ namespace HubDesktop
         public int UDPSenderPort { get; set; }
         private TcpClient tcpClientSocket;
         Socket udpSendingSocket;
-        IPEndPoint UDPendPoint;
+        readonly IPEndPoint UDPendPoint;
 
 
         public FeedbackApp(string Path, int TCPSenderPort, int UDPSenderPort)
@@ -49,7 +49,7 @@ namespace HubDesktop
             UDPendPoint = new IPEndPoint(serverAddr, UDPSenderPort);
         }
 
-        public void sendUDP(string message)
+        public void SendUDP(string message)
         {
             try
             {
@@ -63,7 +63,7 @@ namespace HubDesktop
             
         }
 
-        public async void sendTCPAsync(string message)
+        public async void SendTCPAsync(string message)
         {
             try
             {
@@ -88,6 +88,7 @@ namespace HubDesktop
             }
             catch (Exception e)
             {
+                Console.WriteLine(e);
                 Console.WriteLine("error sending TCP message");
             }
         }

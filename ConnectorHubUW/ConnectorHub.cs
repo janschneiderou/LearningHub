@@ -23,27 +23,23 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
-using Windows.Networking.Sockets;
-using Windows.Storage.Streams;
 using Windows.Data.Json;
+using Windows.Networking.Sockets;
 
 namespace ConnectorHubUW
 {
     public class ConnectorHub
     {
         public delegate void StartRecordingDelegate(object sender);
-        public event StartRecordingDelegate startRecordingEvent;
+        public event StartRecordingDelegate StartRecordingEvent;
 
         public delegate void StopRecordingDelegate(object sender);
-        public event StopRecordingDelegate stopRecordingEvent;
+        public event StopRecordingDelegate StopRecordingEvent;
 
-       // Socket udpSendingSocket;
-        IPEndPoint UDPendPoint;
+        // Socket udpSendingSocket;
+        private IPEndPoint UDPendPoint;
 
         public bool startedByHub = false;
 
@@ -64,22 +60,21 @@ namespace ConnectorHubUW
         private StreamSocket tcpClientSocket;
         private StreamSocketListener myTcpListenerSocket;
 
-       // private TcpListener myTCPListener;
+        // private TcpListener myTCPListener;
         private Task tcpListenerThread;
-        int TCPFileBufferSize = 1024;
-        System.DateTime startRecordingTime;
+        private readonly int TCPFileBufferSize = 1024;
+        private System.DateTime startRecordingTime;
         public string recordingID;
 
         private RecordingObject myRecordingObject;
-
-        List<string> valuesNameDefinition;
-        List<FrameObject> frames;
+        private List<string> valuesNameDefinition;
+        private List<FrameObject> frames;
 
         public bool amIVideo = false;
 
         public bool IamRunning = false;
 
-        public void init()
+        public void Init()
         {
 
             string path = System.IO.Directory.GetCurrentDirectory();
@@ -93,57 +88,54 @@ namespace ConnectorHubUW
             try
             {
                 string[] text = File.ReadAllLines(fileName);
-                TCPSenderPort = Int32.Parse(text[0]);
+                TCPSenderPort = int.Parse(text[0]);
                 TCPListenerPort = text[1];
-                TCPFilePort = Int32.Parse(text[2]);
-                UDPSenderPort = Int32.Parse(text[3]);
-                UDPListenerPort = Int32.Parse(text[4]);
+                TCPFilePort = int.Parse(text[2]);
+                UDPSenderPort = int.Parse(text[3]);
+                UDPListenerPort = int.Parse(text[4]);
                 HupIPAddress = text[5];
 
-                createSockets();
+                CreateSockets();
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 try
                 {
-
-
-
                     string[] text = File.ReadAllLines("portConfig");
-                    TCPSenderPort = Int32.Parse(text[0]);
+                    TCPSenderPort = int.Parse(text[0]);
                     TCPListenerPort = text[1];
-                    TCPFilePort = Int32.Parse(text[2]);
-                    UDPSenderPort = Int32.Parse(text[3]);
-                    UDPListenerPort = Int32.Parse(text[4]);
+                    TCPFilePort = int.Parse(text[2]);
+                    UDPSenderPort = int.Parse(text[3]);
+                    UDPListenerPort = int.Parse(text[4]);
                     HupIPAddress = text[5];
 
-                    createSockets();
+                    CreateSockets();
                 }
-                catch (Exception et)
+                catch (Exception)
                 {
                     //Console.WriteLine("error opening portConfig.txt file");
                 }
-               // Console.WriteLine("error opening portConfig.txt file");
+                // Console.WriteLine("error opening portConfig.txt file");
             }
 
 
         }
 
-        private void createSockets()
+        private void CreateSockets()
         {
-          //  udpSendingSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram,
-         //   ProtocolType.Udp);
+            //  udpSendingSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram,
+            //   ProtocolType.Udp);
 
             IPAddress serverAddr = IPAddress.Parse(HupIPAddress);
 
             UDPendPoint = new IPEndPoint(serverAddr, UDPSenderPort);
             IamRunning = true;
-            tcpListenerThread = Task.Factory.StartNew(() => tcpListenersStartAsync());
+            tcpListenerThread = Task.Factory.StartNew(() => TcpListenersStartAsync());
 
         }
 
         #region tcpListeners
-        private async Task tcpListenersStartAsync()
+        private async Task TcpListenersStartAsync()
         {
             try
             {
@@ -153,23 +145,23 @@ namespace ConnectorHubUW
                 myTcpListenerSocket = new StreamSocketListener();
 
                 // The ConnectionReceived event is raised when connections are received.
-                myTcpListenerSocket.ConnectionReceived += this.myTcpListenerSocket_ConnectionReceived;
+                myTcpListenerSocket.ConnectionReceived += MyTcpListenerSocket_ConnectionReceived;
                 await myTcpListenerSocket.BindServiceNameAsync(TCPListenerPort);
 
-               
+
             }
-            catch (Exception e)
+            catch (Exception)
             {
 
             }
 
         }
 
-        private async void myTcpListenerSocket_ConnectionReceived(StreamSocketListener sender, StreamSocketListenerConnectionReceivedEventArgs args)
+        private async void MyTcpListenerSocket_ConnectionReceived(StreamSocketListener sender, StreamSocketListenerConnectionReceivedEventArgs args)
         {
 
             string receivedString;
-            using (var streamReader = new StreamReader(args.Socket.InputStream.AsStreamForRead()))
+            using (StreamReader streamReader = new StreamReader(args.Socket.InputStream.AsStreamForRead()))
             {
                 receivedString = await streamReader.ReadLineAsync();
             }
@@ -182,86 +174,90 @@ namespace ConnectorHubUW
 
             if (receivedString.Contains(StartRecording))
             {
-                doStartStuff(receivedString);
+                StartRecordingFunction(receivedString);
 
             }
             else if (receivedString.Contains(StopRecording))
             {
 
-                doStopStuff();
+                StopRecordingFunction();
             }
             else if (receivedString.Contains(SendFile))
             {
-                handleSendFile(receivedString);
+                HandleSendFile(receivedString);
             }
             else if (receivedString.Contains(areYouReady))
             {
-                sendReady();
+                SendReady();
             }
 
         }
 
-        private async void doStopStuff()
+        private async void StopRecordingFunction()
         {
             int x = frames.Count;
-            stopRecordingEvent(this);
+            StopRecordingEvent(this);
             try
             {
-                if (myRecordingObject.applicationName.Equals("ScreencaptureTest")||amIVideo==true)
+                if (myRecordingObject.ApplicationName.Equals("ScreencaptureTest") || amIVideo == true)
                 {
 
                 }
                 else
                 {
-                    JsonObject jsonRecordingObject = new JsonObject();
-                    jsonRecordingObject.Add("recordingID", JsonValue.CreateStringValue(myRecordingObject.recordingID));
-                    jsonRecordingObject.Add("applicationName", JsonValue.CreateStringValue(myRecordingObject.applicationName));
+                    JsonObject jsonRecordingObject = new JsonObject
+                    {
+                        { "recordingID", JsonValue.CreateStringValue(myRecordingObject.RecordingID) },
+                        { "applicationName", JsonValue.CreateStringValue(myRecordingObject.ApplicationName) }
+                    };
 
                     JsonArray jsonRecordingFrames = new JsonArray();
-                    JsonObject[] jsonFrame = new JsonObject[myRecordingObject.frames.Count];
+                    JsonObject[] jsonFrame = new JsonObject[myRecordingObject.Frames.Count];
                     int i = 0;
-                    foreach(FrameObject f in myRecordingObject.frames)
+                    foreach (FrameObject f in myRecordingObject.Frames)
                     {
-                        jsonFrame[i] = new JsonObject();
-                        jsonFrame[i].Add("framestamp", JsonValue.CreateStringValue(f.frameStamp.ToString()));
+                        jsonFrame[i] = new JsonObject
+                        {
+                            { "framestamp", JsonValue.CreateStringValue(f.frameStamp.ToString()) }
+                        };
                         JsonObject jsonFrameAttributes = new JsonObject();
-                        foreach(KeyValuePair<string, string> attributes in f.frameAttributes)
+                        foreach (KeyValuePair<string, string> attributes in f.frameAttributes)
                         {
                             jsonFrameAttributes.Add(attributes.Key, JsonValue.CreateStringValue(attributes.Value));
                         }
                         jsonFrame[i]["frameAttributes"] = jsonFrameAttributes;
                         i++;
                     }
-                    for(int j=0;j<i;j++)
+                    for (int j = 0; j < i; j++)
                     {
                         jsonRecordingFrames.Add(jsonFrame[j]);
                     }
 
-                    jsonRecordingObject["frames"] = jsonRecordingFrames; 
+                    jsonRecordingObject["frames"] = jsonRecordingFrames;
 
                     string json = jsonRecordingObject.Stringify();
-                    
-                    string fileName = myRecordingObject.recordingID +""+ myRecordingObject.applicationName + ".json";
+
+                    string fileName = myRecordingObject.RecordingID + "" + myRecordingObject.ApplicationName + ".json";
                     Windows.Storage.StorageFolder storageFolder = Windows.Storage.ApplicationData.Current.LocalFolder;
 
                     Windows.Storage.StorageFile recordingFile = await storageFolder.CreateFileAsync(fileName,
-        Windows.Storage.CreationCollisionOption.ReplaceExisting);
+                    Windows.Storage.CreationCollisionOption.ReplaceExisting);
 
                     await Windows.Storage.FileIO.WriteTextAsync(recordingFile, json);
-                    
-                    sendFileTCP(recordingFile.Path);
+
+                    SendFileTCP(recordingFile.Path);
                     x++;
 
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 int z = 0;
                 z++;
             }
         }
 
-        private void doStartStuff(string receivedString)
+        private void StartRecordingFunction(string receivedString)
         {
             startRecordingTime = DateTime.Now;
             //"<START RECORDING>recordinID,ApplicationID</START RECORDING>"
@@ -270,14 +266,16 @@ namespace ConnectorHubUW
             int startIndex3 = receivedString.IndexOf("</");
             int length = startIndex2 - startIndex;
             int length2 = startIndex3 - startIndex2;
-            myRecordingObject = new RecordingObject();
-            myRecordingObject.recordingID = receivedString.Substring(startIndex, length - 1);
-            myRecordingObject.applicationName = receivedString.Substring(startIndex2, length2);
-            startRecordingEvent(this);
+            myRecordingObject = new RecordingObject
+            {
+                RecordingID = receivedString.Substring(startIndex, length - 1),
+                ApplicationName = receivedString.Substring(startIndex2, length2)
+            };
+            StartRecordingEvent(this);
             startedByHub = true;
         }
 
-        private void handleSendFile(string receivedString)
+        private void HandleSendFile(string receivedString)
         {
             //"<SEND FILE>myFile.avi</SEND FILE>"
             int startIndex = receivedString.IndexOf(">") + 1;
@@ -285,34 +283,34 @@ namespace ConnectorHubUW
 
             int length = startIndex2 - startIndex;
             string filename = receivedString.Substring(startIndex, length - 1);
-            sendFileTCP(filename);
+            SendFileTCP(filename);
         }
 
         #endregion
 
         #region sendFile
-        private async void sendFileTCP(string fileName)
+        private async void SendFileTCP(string fileName)
         {
             byte[] SendingBuffer = null;
             StreamSocket client = null;
 
-        //    NetworkStream netstream = null;
+            //    NetworkStream netstream = null;
             try
             {
                 client = new StreamSocket();
 
                 Windows.Networking.HostName serverHost = new Windows.Networking.HostName(HupIPAddress);
 
-                
+
                 await client.ConnectAsync(serverHost, TCPFilePort.ToString());
 
-             //   netstream = (NetworkStream)client.OutputStream;
-                
+                //   netstream = (NetworkStream)client.OutputStream;
+
                 FileStream Fs = new FileStream(fileName, FileMode.Open, FileAccess.Read);
                 int NoOfPackets = Convert.ToInt32
              (Math.Ceiling(Convert.ToDouble(Fs.Length) / Convert.ToDouble(TCPFileBufferSize)));
 
-                int TotalLength = (int)Fs.Length, CurrentPacketLength, counter = 0;
+                int TotalLength = (int)Fs.Length, CurrentPacketLength;
                 for (int i = 0; i < NoOfPackets; i++)
                 {
                     if (TotalLength > TCPFileBufferSize)
@@ -321,17 +319,20 @@ namespace ConnectorHubUW
                         TotalLength = TotalLength - CurrentPacketLength;
                     }
                     else
+                    {
                         CurrentPacketLength = TotalLength;
+                    }
+
                     SendingBuffer = new byte[CurrentPacketLength];
                     Fs.Read(SendingBuffer, 0, CurrentPacketLength);
 
-                    
+
 
                     using (Stream outputStream = client.OutputStream.AsStreamForWrite())
                     {
-                        await outputStream.WriteAsync(SendingBuffer, 0, (int)SendingBuffer.Length);
+                        await outputStream.WriteAsync(SendingBuffer, 0, SendingBuffer.Length);
                         await outputStream.FlushAsync();
-                        
+
                     }
                     //   netstream.Write(SendingBuffer, 0, (int)SendingBuffer.Length);
 
@@ -340,13 +341,13 @@ namespace ConnectorHubUW
                 Fs.Dispose();
                 //Fs.Close();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-               // Console.WriteLine(ex.Message);
+                // Console.WriteLine(ex.Message);
             }
             finally
             {
-            //    netstream.Dispose();
+                //    netstream.Dispose();
                 client.Dispose();
 
             }
@@ -356,29 +357,29 @@ namespace ConnectorHubUW
 
         #region interfaces
 
-        public void sendFeedback(string feedback)
+        public void SendFeedback(string feedback)
         {
-            FeedbackObject f = new FeedbackObject(startRecordingTime, feedback, myRecordingObject.applicationName);
-          //  string json = JsonConvert.SerializeObject(f, Formatting.Indented);
-          //  byte[] send_buffer = Encoding.ASCII.GetBytes(json);
-        //    udpSendingSocket.SendTo(send_buffer, UDPendPoint);
+            FeedbackObject f = new FeedbackObject(startRecordingTime, feedback, myRecordingObject.ApplicationName);
+            //  string json = JsonConvert.SerializeObject(f, Formatting.Indented);
+            //  byte[] send_buffer = Encoding.ASCII.GetBytes(json);
+            //    udpSendingSocket.SendTo(send_buffer, UDPendPoint);
         }
 
-        public void sendReady()
+        public void SendReady()
         {
-            sendTCPAsync(IamReady);
+            SendTCPAsync(IamReady);
         }
 
-        public void setValuesName(List<string> valuesNameDefinition)
+        public void SetValuesName(List<string> valuesNameDefinition)
         {
             this.valuesNameDefinition = valuesNameDefinition;
         }
-        public void storeFrame(List<string> frameValues)
+        public void StoreFrame(List<string> frameValues)
         {
             try
             {
                 FrameObject f = new FrameObject(startRecordingTime, valuesNameDefinition, frameValues);
-                myRecordingObject.frames.Add(f);
+                myRecordingObject.Frames.Add(f);
             }
             catch
             {
@@ -386,7 +387,7 @@ namespace ConnectorHubUW
             }
 
         }
-        public async void sendTCPAsync(string message)
+        public async void SendTCPAsync(string message)
         {
             try
             {
@@ -397,10 +398,10 @@ namespace ConnectorHubUW
 
                 await tcpClientSocket.ConnectAsync(serverHost, TCPSenderPort.ToString());
 
-                
+
                 using (Stream outputStream = tcpClientSocket.OutputStream.AsStreamForWrite())
                 {
-                    using (var streamWriter = new StreamWriter(outputStream))
+                    using (StreamWriter streamWriter = new StreamWriter(outputStream))
                     {
                         await streamWriter.WriteLineAsync(message);
                         await streamWriter.FlushAsync();
@@ -410,15 +411,15 @@ namespace ConnectorHubUW
             }
             catch
             {
-               // Console.WriteLine("error sending TCP message");
+                // Console.WriteLine("error sending TCP message");
             }
         }
 
-        public void close()
+        public void Close()
         {
             IamRunning = false;
-           
-          //  myTCPListener.Stop();
+
+            //  myTCPListener.Stop();
         }
 
         #endregion

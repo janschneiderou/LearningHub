@@ -35,20 +35,13 @@ namespace ConnectorHubUW
     public class FeedbackHub
     {
         public delegate void feedbackReceivedDelegate(object sender, string feedback);
-        public event feedbackReceivedDelegate feedbackReceivedEvent;
+        public event feedbackReceivedDelegate FeedbackReceivedEvent;
 
         private int TCPListenerPort { get; set; }
         private int UDPListenerPort { get; set; }
 
         private DatagramSocket receivingUdp;
-        private Task udpListenerThread;
-
-      //  private TcpListener myTCPListener;
-        private Task tcpListenerThread;
-
         private string currentUDPString;
-
-        bool isRunning;
 
         public FeedbackHub()
         {
@@ -56,14 +49,14 @@ namespace ConnectorHubUW
             
         }
 
-        public void init(int TCPListenerPort, int UDPListenerPort)
+        public void Init(int TCPListenerPort, int UDPListenerPort)
         {
             this.TCPListenerPort = TCPListenerPort;
             this.UDPListenerPort = UDPListenerPort;
-            createSocketsAsync();
+            CreateSocketsAsync();
         }
 
-        public void init()
+        public void Init()
         {
             
 
@@ -77,18 +70,18 @@ namespace ConnectorHubUW
                 TCPListenerPort = Int32.Parse(text[0]);
                 UDPListenerPort = Int32.Parse(text[1]);
 
-                createSocketsAsync();
+                CreateSocketsAsync();
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 TCPListenerPort = 15002;
                 UDPListenerPort = 16002;
-                createSocketsAsync();
+                CreateSocketsAsync();
                 //  Console.WriteLine("error opening feedbackPortConfig.txt file");
             }
         }
 
-        private async void createSocketsAsync()
+        private async void CreateSocketsAsync()
         {
             receivingUdp = new DatagramSocket();
             receivingUdp.MessageReceived += ReceivingUdp_MessageReceived;
@@ -104,14 +97,14 @@ namespace ConnectorHubUW
             {
                 request = dataReader.ReadString(dataReader.UnconsumedBufferLength);
                 currentUDPString = request;
-                handleUDPPackage();
+                HandleUDPPackage();
             }
         }
 
        
-        private void handleUDPPackage()
+        private void HandleUDPPackage()
         {
-            feedbackReceivedEvent(this, currentUDPString);
+            FeedbackReceivedEvent(this, currentUDPString);
         }
     }
 }

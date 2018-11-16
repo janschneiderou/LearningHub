@@ -17,11 +17,11 @@ namespace LearningHub.Classes
         public bool isRunning = false;
         public bool isEnabled = false;
         bool newPackage = false;
-        int listeningPort;
+        private readonly int listeningPort;
         string filePath;
         public string applicationName;
         string currentString;
-        Controller Parent;
+        private readonly Controller Parent;
           
         public ApplicationClass(string applicationName, string filePath, 
             string remoteBool, string tCPListener, string tCPSender,  string uDPListener, 
@@ -34,17 +34,17 @@ namespace LearningHub.Classes
             //receivingUdp = new UdpClient(this.listeningPort);
         }
 
-        public bool hasNewMessage()
+        public bool HasNewMessage()
         {
             return newPackage;
         }
-        public string getCurrentString()
+        public string GetCurrentString()
         {
             newPackage = false;
             return currentString;
         }
         //Starts application and reader for the UDP thread
-        public void startApp()
+        public void StartApp()
         {
             try
             {
@@ -97,7 +97,7 @@ namespace LearningHub.Classes
         }
 
         //closes application
-        public void closeApp()
+        public void CloseApp()
         {
             try
             {
@@ -123,7 +123,7 @@ namespace LearningHub.Classes
         /// <summary>
         /// Thread receiving the UDP packages and forwarding them to the main class
         /// </summary>
-        private void myThreadFunction()
+        private void MyThreadFunction()
         {
             while (isRunning == true)
             {
