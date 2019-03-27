@@ -182,7 +182,7 @@ namespace ConnectorHub
                     Socket s = myTCPListener.AcceptSocket();
                     Console.WriteLine("Connection accepted from " + s.RemoteEndPoint);
 
-                    byte[] b = new byte[100];
+                     byte[] b = new byte[100];
 
                     int k = s.Receive(b);
                     Console.WriteLine("Recieved...");

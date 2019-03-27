@@ -69,6 +69,7 @@ namespace HubDesktop
         public static string workingDirectory;
         public FeedbackObject lastFeedbackSent;
 
+        public static bool uploadToServer = false;
         public static string currentUser;
 
         // variables for remote control

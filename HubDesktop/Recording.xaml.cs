@@ -49,6 +49,7 @@ namespace HubDesktop
             InitializeInterface();
             InitializeControl();
 
+            uploadFiles.IsChecked = MainWindow.uploadToServer; 
 
         }
 
@@ -246,9 +247,18 @@ namespace HubDesktop
             Dispatcher.Invoke(() =>
             {
                 //buttonFinish.Visibility = Visibility.Visible;
-                statusLabel.Content = "Uploading files to server";
-                CompressAndUpload ca = new CompressAndUpload(MainWindow.workingDirectory + "\\" + recordingID, recordingID, parent.myEnabledApps);
-                ca.FinishedUploadingEvent += Ca_finishedUploadingEvent;
+                if(MainWindow.uploadToServer==true)
+                {
+                    statusLabel.Content = "Uploading files to server";
+                    CompressAndUpload ca = new CompressAndUpload(MainWindow.workingDirectory + "\\" + recordingID, recordingID, parent.myEnabledApps);
+                    ca.FinishedUploadingEvent += Ca_finishedUploadingEvent;
+                }
+                else
+                {
+                    buttonFinish.Visibility = Visibility.Visible;
+                    statusLabel.Content = "Recorded Finished";
+                }
+                
             });
         }
 
@@ -267,6 +277,18 @@ namespace HubDesktop
             }
             parent.StartAgain();
             MainWindow.myState = MainWindow.States.menu;
+        }
+
+        private void uploadFiles_Checked(object sender, RoutedEventArgs e)
+        {
+            MainWindow.uploadToServer = true;
+            
+            
+        }
+
+        private void uploadFiles_Unchecked(object sender, RoutedEventArgs e)
+        {
+            MainWindow.uploadToServer = false;
         }
     }
 }
