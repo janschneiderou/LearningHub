@@ -9,15 +9,15 @@ The objective of the LearningHub (LH) is to collect data from different sources 
 It is neither feasible nor desirable to have applications retrieving, recording and analyzing data from learners all the time. The LH works by recording only specific learning tasks, this means that the user of the LH needs to manually start and stop a recording.
 Communication between LH and data providers
 To start, stop and generate a unified multimodal recording the LH needs to communicate with the providers of data. The first step into creating a recording is to define the communication channels between the data providers and the LH. For each source provider one needs to define:
-∑         Name of the provider.
-∑         Path where the provider will be executed (file path in case the provider will run on the same computer or IP address in case the provider will run remotely)
-∑         Remote or local execution of the provider
-∑         Port number for the TCP listener socket that will receive instructions from the provider.
-∑         Port number of the TCP sender socket that will send instructions to the provider.
-∑         Port number for the TCP socket that will receive files from the provider.
-∑         Port number for the UDP socket that will receive critical real-time data from the provider.
-∑         Port number for the UDP socket that will send streams of data to the provider.
-∑         Boolean value stating if the provider will be used for the specific recording.
+¬∑         Name of the provider.
+¬∑         Path where the provider will be executed (file path in case the provider will run on the same computer or IP address in case the provider will run remotely)
+¬∑         Remote or local execution of the provider
+¬∑         Port number for the TCP listener socket that will receive instructions from the provider.
+¬∑         Port number of the TCP sender socket that will send instructions to the provider.
+¬∑         Port number for the TCP socket that will receive files from the provider.
+¬∑         Port number for the UDP socket that will receive critical real-time data from the provider.
+¬∑         Port number for the UDP socket that will send streams of data to the provider.
+¬∑         Boolean value stating if the provider will be used for the specific recording.
  
  
  
@@ -59,14 +59,19 @@ The first instruction executed by data providers after receiving a StartRecordin
  ##   Immediate Feedback
 
 
-To keep things simple from the side of the tutor it is recommended to only transmit critical data from the providers to the LH. An example of critical data could be the instruction to ìSpeak Louderî in case a microphone application detects that the learner is speaking too soft during the specific learning task. To keep things as simple as possible this type of instruction is transmitted from the provider to the LH via UDP sockets.
+To keep things simple from the side of the tutor it is recommended to only transmit critical data from the providers to the LH. An example of critical data could be the instruction to ‚ÄúSpeak Louder‚Äù in case a microphone application detects that the learner is speaking too soft during the specific learning task. To keep things as simple as possible this type of instruction is transmitted from the provider to the LH via UDP sockets.
 The LH can then forward the received instructions to applications design to provide feedback to learners. This applications can be ambient displays, augmented reality glasses, etc. Establishing the communication between the LH and the immediate feedback applications is a very similar process to the one for establishing the link between the LH and providers. Before starting a recording one needs to manually select the feedback applications that will be used and define the communication channels. For each feedback application one needs to define:
-∑	The Name of the application
-∑	Path to reach the application (IP address)
-∑	Port number for sending operational instructions via a TCP socket.
-∑	Port number for streaming feedback instructions via a UDP socket.
+¬∑	The Name of the application
+¬∑	Path to reach the application (IP address)
+¬∑	Port number for sending operational instructions via a TCP socket.
+¬∑	Port number for streaming feedback instructions via a UDP socket.
  
 The feedback applications need to open the socket communications in order to receive the information that comes from the LH. This can be done through the use of the dynamic Libraries included in the LH solution (the currently supported libraries are for the .Net framework and Windows Universal Platform), or by manually programing the TCP and UDP sockets.
+
+In order to send feedback from a sensor application to the learningHub one has to add a reference to the ConnectorHub.dll or ConnectorHubUW.dll, initialize it and call the ConnectorHub.sendFeedback(string feedback) method whenever the application is supposed to send feedback.
+In order to receive feedback, one needs to add a reference to the ConnectorHub.dll or ConnectorHubUW.dll to the project, create and initialize a ConnectorHubUW.feedback object, and create a feedbackReceivedEvent event handler in order to catch the feedback sent from the LearningHub.
+
+
 
 
 
